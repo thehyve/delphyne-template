@@ -1,5 +1,5 @@
-# ohdsi-etl-master-template
-A curated template for future OHDSI ETL projects
+# ohdsi-etl-master-framework
+An ETL template for future OHDSI projects
 
 ## Discussion items
 
