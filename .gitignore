@@ -9,6 +9,9 @@
 # User-specific stuff
 .idea/
 
+# Python
+.ipynb_checkpoints
+
 # CMake
 cmake-build-*/
 
