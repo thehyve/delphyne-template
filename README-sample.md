@@ -2,7 +2,7 @@
 Project description (e.g. PROJECT ETL to OMOP CDM vX.X).
 
 ## Dependencies
-Python X.X with the following packages:
+Python 3.6+ with the following packages:
 - `package1`
 - `package2`
 - `package3`
