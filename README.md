@@ -38,7 +38,7 @@ Contains the main ETL code. The folder should be structured as follows; code exa
 
 Under `python/`:
 - `cdm_custom` collects any custom tables  needed in the project that are not part of an official OMOP CDM release. 
-`TreatmentLine` is provided as an example.
+The `TreatmentLine` table is provided as an example. Remove this folder if no custom table is needed.
 - `transformation/` collects the project-specific transformation scripts for each source data table - target CDM table combination.
 The scripts must follow the mapping specifications closely, and vice-versa the mapping specifications must reflect any implementation decision made in the scripts.
 - `util/` should contain any functions or classes needed in the transformation scripts that is not already available in the repository dependencies. 
