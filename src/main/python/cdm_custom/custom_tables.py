@@ -1,14 +1,11 @@
 # coding: utf-8
 from sqlalchemy import Column, Date, ForeignKey, Integer, String
 from sqlalchemy.orm import relationship
-from ohdsi_etl_wrapper.database import base
+from ohdsi_etl_wrapper import Base
 
-
-metadata = base.metadata
-
-class TreatmentLine(base):
+class TreatmentLine(Base):
     __tablename__ = 'treatment_line'
-    __table_args__ = {'schema': 'public'}
+    __table_args__ = {'schema': 'cdm'}
 
     treatment_line_id = Column(Integer, primary_key=True)
     person_id = Column(ForeignKey('public.person.person_id'), nullable=False, index=True)

@@ -16,11 +16,12 @@
 from pathlib import Path
 import logging
 
-from ohdsi_etl_wrapper import Wrapper as BaseWrapper
+from ohdsi_etl_wrapper import Wrapper as BaseWrapper # TODO: check import location
+from ohdsi_etl_wrapper.cdm import hybrid # TODO: customize CDM version
 from src.main.python.cdm_custom import TreatmentLine # only custom tables, other provided within Wrapper class
 from src.main.python.transformation import *
 # TODO: where to import these from, will also be part of the package?
-from src.main.python.model.SourceData import SourceData
+from src.main.python.model.SourceData import SourceData # TODO: use local version for the moment, will be made general (for data files & database)
 from src.main.python.util import VariableConceptMapper
 from src.main.python.util import RegimenExposureMapper
 from src.main.python.util import OntologyConceptMapper
@@ -31,11 +32,18 @@ logger = logging.getLogger(__name__)
 PATH_MAPPING_TABLES = Path('./resources/mapping_tables')
 PATH_CUSTOM_VOCABULARY = Path('./resources/custom_vocabulary/')
 
+# TODO: remove the following once part of config
+sql_parameters = {
+    # 'source_schema' : '', # only needed if reading from a database, otherwise omit
+    'vocab_schema' : 'vocab',  # use it to override the default schema name
+    'target_schema' : 'my_schema'
+}
+
 
 class Wrapper(BaseWrapper):  # TODO: call the subclass something else or ok to rename imported module (see imports)?
 
     def __init__(self, database, source_folder, debug=False):
-        super().__init__(database=database, source_schema='', debug=debug)
+        super().__init__(database=database, cdm=hybrid, sql_parameters=sql_parameters) # TODO: check debug argument
         self.source_folder = Path(source_folder)
         self.skip_vocabulary_loading = False
         self.variable_concept_mapper = VariableConceptMapper(PATH_MAPPING_TABLES)
@@ -59,7 +67,7 @@ class Wrapper(BaseWrapper):  # TODO: call the subclass something else or ok to r
         logger.info('{:-^100}'.format(' Setup '))
 
         # Prepare source
-        self.truncate_tables()
+        self.drop_cdm()
         self.create_cdm()
 
         # Load custom concepts
@@ -83,34 +91,6 @@ class Wrapper(BaseWrapper):  # TODO: call the subclass something else or ok to r
             logger.info("Permissions granted to HONEUR admin and app roles")
         except:
             logger.error("Failed to grant permissions to HONEUR admin and app roles")
-
-    # TODO: either group all of the following in a single method, or update base metadata with custom tables (preferred)
-
-    self.custom_table_list = self._get_cdm_tables_to_drop() + [TreatmentLine]
-
-    def create_cdm(self): # TODO: this won't work, base method doesn't take custom list
-        '''
-        Creates OMOP CDM (non-vocabulary) tables, if they do not exist.
-        Extends the original Wrapper method to enable the use of custom tables, by adding them to the list below.
-        Remove this method if no custom table is needed.
-        '''
-        return super(BaseWrapper, self).create_all(self.custom_table_list)
-
-    def drop_cdm(self):
-        '''
-        Drops OMOP CDM (non-vocabulary) tables, if they exist.
-        Extends the original Wrapper method to enable the use of custom tables, by adding them to the list below.
-        Remove this method if no custom table is needed.
-        '''
-        return super(BaseWrapper, self).drop_cdm(self.custom_table_list)
-
-    def truncate_cdm(self): # TODO: method does not exist in Wrapper; see CLLEAR for an example
-        '''
-        Truncates OMOP CDM (non-vocabulary) tables, if they exist.
-        Extends the original Wrapper method to enable the use of custom tables, by adding them to the list below.
-        Remove this method if no custom table is needed.
-        '''
-        return super(BaseWrapper, self).truncate_cdm(self.custom_table_list)
 
     # TODO: change the following to load these programmatically from a source data folder?
     # NOTE: replace the following with project-specific source tables and function names!

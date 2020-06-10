@@ -16,20 +16,21 @@ from typing import List
 import pandas as pd
 
 from ohdsi_etl_wrapper.cdm import Person # TODO: check dependency location
-from ..util import create_person_id_from_subject_id # sample general function
-from ..util import get_datetime # sample date function
+# sample functions, remove if not used
+from ..util import create_person_id_from_subject_id
+from ..util import get_datetime
 
 
 def sample_source_table_to_person(wrapper) -> List[Person]:
 
     source = pd.DataFrame(wrapper.get_sample_source_table())
 
-    # alternatively, you could use the dictionary retrieved by the wrapper method directly;
-    # however, the use of DataFrame objects is recommended for:
+    # The use of DataFrame objects is recommended for:
     # - data filtering
     # - joins between multiple source tables
+    # alternatively, you could use the dictionary returned by the wrapper method directly:
 
-    # source = wrapper.get_sample_source_table() -> Dictionary { row : { variable : value} }
+    # source = wrapper.get_sample_source_table() # Dictionary { row : { variable : value} }
     #
     # for row in source:
     #     for variable, value in row.items():
