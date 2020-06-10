@@ -17,8 +17,8 @@ from pathlib import Path
 import logging
 
 from ohdsi_etl_wrapper import Wrapper as BaseWrapper
-from src.main.python.model.cdm import *
-from src.main.python.transformation import TreatmentLine # only custom tables, other provided within Wrapper class
+from src.main.python.cdm_custom import TreatmentLine # only custom tables, other provided within Wrapper class
+from src.main.python.transformation import *
 # TODO: where to import these from, will also be part of the package?
 from src.main.python.model.SourceData import SourceData
 from src.main.python.util import VariableConceptMapper
@@ -91,14 +91,15 @@ class Wrapper(BaseWrapper):  # TODO: call the subclass something else or ok to r
 
     # TODO: either group all of the following in a single method, or update base metadata with custom tables (preferred)
 
+    self.custom_table_list = self._get_cdm_tables_to_drop() + [TreatmentLine]
+
     def create_cdm(self): # TODO: this won't work, base method doesn't take custom list
         '''
         Creates OMOP CDM (non-vocabulary) tables, if they do not exist.
         Extends the original Wrapper method to enable the use of custom tables, by adding them to the list below.
         Remove this method if no custom table is needed.
         '''
-        custom_table_list = self._get_cdm_tables_to_drop() + [CustomTable]
-        return super(BaseWrapper, self).create_all(custom_table_list)
+        return super(BaseWrapper, self).create_all(self.custom_table_list)
 
     def drop_cdm(self):
         '''
@@ -106,8 +107,7 @@ class Wrapper(BaseWrapper):  # TODO: call the subclass something else or ok to r
         Extends the original Wrapper method to enable the use of custom tables, by adding them to the list below.
         Remove this method if no custom table is needed.
         '''
-        custom_table_list = self._get_cdm_tables_to_drop() + [CustomTable]
-        return super(BaseWrapper, self).drop_cdm(custom_table_list)
+        return super(BaseWrapper, self).drop_cdm(self.custom_table_list)
 
     def truncate_cdm(self): # TODO: method does not exist in Wrapper; see CLLEAR for an example
         '''
@@ -115,8 +115,7 @@ class Wrapper(BaseWrapper):  # TODO: call the subclass something else or ok to r
         Extends the original Wrapper method to enable the use of custom tables, by adding them to the list below.
         Remove this method if no custom table is needed.
         '''
-        custom_table_list = self._get_cdm_tables_to_drop() + [CustomTable]
-        return super(BaseWrapper, self).truncate_cdm(custom_table_list)
+        return super(BaseWrapper, self).truncate_cdm(self.custom_table_list)
 
     # TODO: change the following to load these programmatically from a source data folder
 
