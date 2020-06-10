@@ -163,7 +163,3 @@ class Wrapper(BaseWrapper):  # TODO: call the subclass something else or ok to r
         session.commit()
         session.close()
         self.load_concept_from_csv(PATH_CUSTOM_VOCABULARY) # TODO: put this in a config file with the previous two (XXX_concept.tsv)
-
-    @staticmethod # TODO: this should be in utils (since used by the transformation scripts), NOT in the wrapper!
-    def create_person_id_from_subject_id(subject_id):
-        return int(subject_id[4:])
