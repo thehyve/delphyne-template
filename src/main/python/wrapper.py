@@ -41,9 +41,9 @@ class Wrapper(BaseWrapper):  # TODO: call the subclass something else or ok to r
         self.variable_concept_mapper = VariableConceptMapper(PATH_MAPPING_TABLES)
         self.regimen_exposure_mapper = RegimenExposureMapper(PATH_MAPPING_TABLES)
         self.ontology_concept_mapper = OntologyConceptMapper(PATH_MAPPING_TABLES)
-        # TODO: better way of doing this, e.g. in transformation scripts instead of here?
-        self.source_table_f1 = None
-        self.source_table_f2 = None
+        # TODO: better way of doing this, e.g. systematically add all available from source folder?
+        # NOTE: replace the following with project-specific source table names!
+        self.sample_source_table = None
 
     # TODO: make this a base Wrapper method? since used only once during setup, I would actually make the method
     def do_skip_vocabulary_loading(self, skip_vocab=True):
@@ -67,16 +67,11 @@ class Wrapper(BaseWrapper):  # TODO: call the subclass something else or ok to r
             logger.info('Loading custom concepts')
             self.create_custom_vocabulary()
 
-        # Transformations
-        # NOTE: make sure execution follows order of table dependencies (see cdm model)
+        # Transformations - make sure execution follows order of table dependencies (see cdm model)
         logger.info('{:-^100}'.format(' ETL '))
-        self.execute_transformation(source1_to_care_site)
-        self.execute_transformation(source1_to_person)
-        self.execute_transformation(source2_to_person)
+        # NOTE: replace the following with project-specific transformations from the transformations/ folder!
+        self.execute_transformation(sample_source_table_to_person)
         self.execute_sql_file('./src/main/sql/sample_script.sql')
-        self.execute_transformation(source3_to_observation)
-
-        # self.create_person_lookup()
 
         self.log_summary()
         self.log_runtime()
@@ -117,22 +112,12 @@ class Wrapper(BaseWrapper):  # TODO: call the subclass something else or ok to r
         '''
         return super(BaseWrapper, self).truncate_cdm(self.custom_table_list)
 
-    # TODO: change the following to load these programmatically from a source data folder
-
-    def get_source_f1(self):
-        if not self.source_table_f1:
-            self.source_table_f1 = SourceData(self.source_folder / 'f1.csv')
-        return self.source_table_f1
-
-    def get_source_f2(self):
-        if not self.source_table_f2:
-            self.source_table_f2 = SourceData(self.source_folder / 'f2.csv')
-        return self.source_table_f2
-
-    def get_source_f3(self):
-        if not self.source_table_f3:
-            self.source_table_f3 = SourceData(self.source_folder / 'f3.csv')
-        return self.source_table_f3
+    # TODO: change the following to load these programmatically from a source data folder?
+    # NOTE: replace the following with project-specific source tables and function names!
+    def get_sample_source_table(self):
+        if not self.sample_source_table:
+            self.sample_source_table = SourceData(self.source_folder / 'sample_source_table.csv')
+        return self.sample_source_table
 
     # TODO: add this to Wrapper methods? note that any custom vocabulary will be available in resources/custom_vocabularies,
     #  so rewriting the details here is completely unnecessary
