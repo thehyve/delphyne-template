@@ -11,7 +11,7 @@ NOTE: Currently supports PostgreSQL only.
 - `README-sample.md` provides a basic README file for the project, including instructions on how to run the ETL.
 Use it to **replace this readme** after completing the initial ETL setup.
 - `requirements.txt` should contain project-specific ETL dependencies. It is **highly recommended** to pin packages to a specific version.
-`ohdsi-etl-wrapper` is a mandatory dependency and is always included by default.
+`omop-etl-wrapper` is a mandatory dependency and is always included by default.
 - `logging.yml` provides customized logging.
 
 ### `docs/` folder
@@ -37,7 +37,8 @@ The mapping tables should adopt an **Usagi-compatible format** whenever possible
 Contains the main ETL code. The folder should be structured as follows; code examples are provided within each subfolder.
 
 Under `python/`:
-- `cdm_custom` collects any custom tables  needed in the project that are not part of an official OMOP CDM release. 
+- `custom_tables` collects any custom table needed in the project that is not available from the selected `omop_etl_wrapper` CDM version. 
+These will be automatically handled by the ETL once bound to a `Base` object, also provided in the `omop_etl_wrapper` package.
 The `TreatmentLine` table is provided as an example. Remove this folder if no custom table is needed.
 - `transformation/` collects the project-specific transformation scripts for each source data table - target CDM table combination.
 The scripts must follow the mapping specifications closely, and vice-versa the mapping specifications must reflect any implementation decision made in the scripts.

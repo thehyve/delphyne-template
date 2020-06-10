@@ -16,15 +16,14 @@
 from pathlib import Path
 import logging
 
-from ohdsi_etl_wrapper import Wrapper as BaseWrapper # TODO: check import location
-from ohdsi_etl_wrapper.cdm import hybrid # TODO: customize CDM version
-from src.main.python.cdm_custom import TreatmentLine # only custom tables, other provided within Wrapper class
+from omop_etl_wrapper import Wrapper as BaseWrapper # TODO: check import location
+from omop_etl_wrapper.cdm import hybrid # TODO: customize CDM version
 from src.main.python.transformation import *
-# TODO: where to import these from, will also be part of the package?
 from src.main.python.model.SourceData import SourceData # TODO: use local version for the moment, will be made general (for data files & database)
-from src.main.python.util import VariableConceptMapper
-from src.main.python.util import RegimenExposureMapper
-from src.main.python.util import OntologyConceptMapper
+from src.main.python.util import VariableConceptMapper # TODO: add to package?
+from src.main.python.util import OntologyConceptMapper # TODO: add to package?
+from src.main.python.util import RegimenExposureMapper # TODO: add to package?
+
 
 logger = logging.getLogger(__name__)
 
@@ -42,13 +41,13 @@ sql_parameters = {
 
 class Wrapper(BaseWrapper):  # TODO: call the subclass something else or ok to rename imported module (see imports)?
 
-    def __init__(self, database, source_folder, debug=False):
-        super().__init__(database=database, cdm=hybrid, sql_parameters=sql_parameters) # TODO: check debug argument
+    def __init__(self, database, source_folder, debug=False): # TODO: check use of debug argument (e.g. CLLEAR)
+        super().__init__(database=database, cdm=hybrid, sql_parameters=sql_parameters)
         self.source_folder = Path(source_folder)
         self.skip_vocabulary_loading = False
         self.variable_concept_mapper = VariableConceptMapper(PATH_MAPPING_TABLES)
-        self.regimen_exposure_mapper = RegimenExposureMapper(PATH_MAPPING_TABLES)
         self.ontology_concept_mapper = OntologyConceptMapper(PATH_MAPPING_TABLES)
+        self.regimen_exposure_mapper = RegimenExposureMapper(PATH_MAPPING_TABLES)
         # TODO: better way of doing this, e.g. systematically add all available from source folder?
         # NOTE: replace the following with project-specific source table names!
         self.sample_source_table = None

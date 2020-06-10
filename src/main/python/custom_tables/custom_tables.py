@@ -1,7 +1,7 @@
 # coding: utf-8
 from sqlalchemy import Column, Date, ForeignKey, Integer, String
 from sqlalchemy.orm import relationship
-from ohdsi_etl_wrapper import Base
+from omop_etl_wrapper import Base
 
 class TreatmentLine(Base):
     __tablename__ = 'treatment_line'

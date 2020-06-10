@@ -25,7 +25,7 @@ __version__ = '0.1.0'
 
 logger = logging.getLogger(__name__)
 
-
+# TODO: change to use config file
 @click.command()
 @click.option('--hostname', '-h', default='localhost', metavar='<host>',
               help='Database server host or socket directory (localhost)')
