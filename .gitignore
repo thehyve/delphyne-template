@@ -1,4 +1,18 @@
+### Custom files (project-specific) ###
+# R test framework
+src/test/R/config.yml
+src/test/R/test_intermediates/source_data/
+src/test/R/test_intermediates/test_query.sql
+src/test/R/all_test_cases.csv
+src/test/R/unittest_results.csv
+src/test/R/.Rhistory
+src/test/R/.RData
+src/test/R/errorReport.txt
 
+# logs
+/logs/
+
+### Automatically generated .gitignore ###
 # Created by https://www.gitignore.io/api/osx,pycharm,windows,intellij
 # Edit at https://www.gitignore.io/?templates=osx,pycharm,windows,intellij
 

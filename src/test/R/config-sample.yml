@@ -1,0 +1,9 @@
+connectionDetails:
+  dbms: 'postgresql'
+  user:
+  password:  
+  server: # should include database name, e.g. 'localhost/my_db'
+  port: 
+cdmSchema: 
+sourceDataDir: 'test_intermediates/source_data/'
+testQueryFileName: 'test_intermediates/test_query.sql'
