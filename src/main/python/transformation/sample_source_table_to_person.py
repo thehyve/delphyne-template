@@ -30,7 +30,7 @@ def sample_source_table_to_person(wrapper) -> List[Person]:
     # - joins between multiple source tables
     # alternatively, you could use the dictionary returned by the wrapper method directly:
 
-    # source = wrapper.get_sample_source_table() # Dictionary { row : { variable : value} }
+    # source = wrapper.get_sample_source_table() # Dictionary { row : { variable : value } }
     #
     # for row in source:
     #     for variable, value in row.items():

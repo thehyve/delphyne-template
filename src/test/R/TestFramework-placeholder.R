@@ -1,3 +1,5 @@
+# sample custom code for TreatmentLine table
+
 expect_treatment_line <- function(treatment_line_id, person_id, drug_era_start_date, drug_era_end_date, line_number, total_cycle_number, line_start_date, line_end_date, drug_concept_id, drug_exposure_count, treatment_type_id) {
   fields <- c()
   values <- c()
