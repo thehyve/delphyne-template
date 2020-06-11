@@ -39,7 +39,7 @@ sql_parameters = {
 }
 
 
-class Wrapper(BaseWrapper):  # TODO: call the subclass something else or ok to rename imported module (see imports)?
+class Wrapper(BaseWrapper):
 
     def __init__(self, database, source_folder, debug=False): # TODO: check use of debug argument (e.g. CLLEAR)
         super().__init__(database=database, cdm=hybrid, sql_parameters=sql_parameters)
