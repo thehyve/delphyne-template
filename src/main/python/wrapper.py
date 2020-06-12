@@ -27,8 +27,8 @@ logger = logging.getLogger(__name__)
 
 class Wrapper(BaseWrapper):
 
-    def __init__(self, config):
-        super().__init__(database=config['database'], cdm=hybrid, sql_parameters=config['sql_parameters'])
+    def __init__(self, database, config):
+        super().__init__(database=database, cdm=hybrid, sql_parameters=config['sql_parameters'])
         # load config settings
         self.source_folder = Path(config['file_paths']['path_source_folder'])
         self.path_mapping_tables = Path(config['file_paths']['path_mapping_tables'])
