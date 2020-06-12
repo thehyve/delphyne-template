@@ -13,15 +13,17 @@
 # GNU General Public License for more details.
 
 # !/usr/bin/env python3
+
 from pathlib import Path
 import logging
 from omop_etl_wrapper import Wrapper as BaseWrapper # TODO: check import location
-from omop_etl_wrapper.cdm import hybrid # TODO: customize CDM version
+from omop_etl_wrapper.cdm import hybrid # TODO: make this configurable (needs wrapper package changes)
 from src.main.python.transformation import *
 from src.main.python.model.SourceData import SourceData # TODO: use local version for the moment, will be made general (for data files & database)
 from src.main.python.util import VariableConceptMapper # TODO: add to package?
 from src.main.python.util import OntologyConceptMapper # TODO: add to package?
 from src.main.python.util import RegimenExposureMapper # TODO: add to package?
+
 
 logger = logging.getLogger(__name__)
 
@@ -29,22 +31,18 @@ class Wrapper(BaseWrapper):
 
     def __init__(self, database, config):
         super().__init__(database=database, cdm=hybrid, sql_parameters=config['sql_parameters'])
-        # load config settings
+        # Load config settings
         self.source_folder = Path(config['file_paths']['path_source_folder'])
         self.path_mapping_tables = Path(config['file_paths']['path_mapping_tables'])
         self.path_custom_vocabularies = Path(config['file_paths']['path_custom_vocabularies'])
         self.skip_vocabulary_loading = config['optional'].getboolean('skip_vocabulary_loading', fallback=True)
-        # load data to objects
+        # Load data to objects
         self.variable_concept_mapper = VariableConceptMapper(self.path_mapping_tables)
         self.ontology_concept_mapper = OntologyConceptMapper(self.path_mapping_tables)
         self.regimen_exposure_mapper = RegimenExposureMapper(self.path_mapping_tables)
         # TODO: better way of doing this, e.g. systematically add all available from source folder?
         # NOTE: replace the following with project-specific source table names!
         self.sample_source_table = None
-
-    # TODO: make this a base Wrapper method? since used only once during setup, I would actually make the method
-    def do_skip_vocabulary_loading(self, skip_vocab=True):
-        self.skip_vocabulary_loading = skip_vocab
 
     def run(self):
 
@@ -87,6 +85,10 @@ class Wrapper(BaseWrapper):
         if not self.sample_source_table:
             self.sample_source_table = SourceData(self.source_folder / 'sample_source_table.csv')
         return self.sample_source_table
+    
+    # TODO: make this a base Wrapper method? since used only once during setup, I would actually make the method
+    def do_skip_vocabulary_loading(self, skip_vocab=True):
+        self.skip_vocabulary_loading = skip_vocab
 
     # TODO: add this to Wrapper methods? note that any custom vocabulary will be available in resources/custom_vocabularies,
     #  so rewriting the details here is completely unnecessary
