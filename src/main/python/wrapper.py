@@ -14,6 +14,7 @@
 
 # !/usr/bin/env python3
 from pathlib import Path
+from typing import Dict
 import logging
 
 from omop_etl_wrapper import Wrapper as BaseWrapper # TODO: check import location
@@ -59,12 +60,20 @@ class Wrapper(BaseWrapper):
     def do_skip_vocabulary_loading(self, skip_vocab=True):
         self.skip_vocabulary_loading = skip_vocab
 
-    def _load_sources(self): # TODO: test this + add config
+    def _load_sources(self, pattern: str = '*') -> Dict :
+        '''
+        When the preload_source_files option is on, 
+        returns a dictionary of SourceData objects for each source data file included in the source folder.
+        If a list of source files to load is available, it only loads the files in that list, ignoring the rest. 
+
+        To match a specific filename pattern, you can provide an optional pattern string argument. 
+        '''
         source_dict = {}
-        if self.preload_source_files == True:
-            for source_file in self.source_folder: #TODO: check how this works with paths
-                if not self.load_source_list or source_file in self.load_source_list:
-                    source_dict[source_file] = SourceData(self.source_folder / source_file)
+        if self.preload_source_files:
+            for source_file in self.source_folder.glob(pattern):
+                source_file_name = source_file.name
+                if not self.load_source_list or source_file_name in self.load_source_list:
+                    source_dict[source_file_name] = SourceData(source_file)
         return source_dict
 
     def get_source_data(self, source_file):
