@@ -52,9 +52,6 @@ class Wrapper(BaseWrapper):
         self.variable_concept_mapper = VariableConceptMapper(PATH_MAPPING_TABLES)
         self.ontology_concept_mapper = OntologyConceptMapper(PATH_MAPPING_TABLES)
         self.regimen_exposure_mapper = RegimenExposureMapper(PATH_MAPPING_TABLES)
-        # TODO: better way of doing this, e.g. systematically add all available from source folder?
-        # NOTE: replace the following with project-specific source table names!
-        self.sample_source_table = None
 
     # TODO: make this a base Wrapper method? since used only once during setup, I would actually make the method
     def do_skip_vocabulary_loading(self, skip_vocab=True):
