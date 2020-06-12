@@ -45,8 +45,8 @@ class Wrapper(BaseWrapper):
     def __init__(self, database, source_folder, debug=False): # TODO: check use of debug argument (e.g. CLLEAR)
         super().__init__(database=database, cdm=hybrid, sql_parameters=sql_parameters)
         self.source_folder = Path(source_folder)  # TODO: move to config
-        self.load_source_list = []  # TODO: move to config
         self.preload_source_files = True  # TODO: move to config
+        self.preload_source_file_list = []  # TODO: move to config
         self.skip_vocabulary_loading = False
         self.preloaded_source_files = self._load_source_files()
         self.variable_concept_mapper = VariableConceptMapper(PATH_MAPPING_TABLES)
@@ -60,7 +60,7 @@ class Wrapper(BaseWrapper):
     def do_skip_vocabulary_loading(self, skip_vocab=True):
         self.skip_vocabulary_loading = skip_vocab
 
-    def _load_sources(self, pattern: str = '*') -> Dict :
+    def _load_source_files(self, pattern: str = '*') -> Dict :
         '''
         When the preload_source_files option is on, 
         returns a dictionary of SourceData objects for each source data file included in the source folder.
@@ -72,7 +72,7 @@ class Wrapper(BaseWrapper):
         if self.preload_source_files:
             for source_file in self.source_folder.glob(pattern):
                 source_file_name = source_file.name
-                if not self.load_source_list or source_file_name in self.load_source_list:
+                if not self.preload_source_file_list or source_file_name in self.preload_source_file_list:
                     source_dict[source_file_name] = SourceData(source_file)
         return source_dict
 
