@@ -1,11 +1,18 @@
+database:
+  hostname: localhost   # Database server host or socket directory
+  port: 5432            # Database server port
+  database: etl         # Database name to connect to
+  username: postgres    # Database user name
+  password: postgres    # User password
+    
 file_paths:
-    path_source_folder: ./resources/synthetic_data
-    path_mapping_tables: ./resources/mapping_tables
-    path_custom_vocabularies: ./resources/custom_vocabularies
+  path_source_folder: ./resources/synthetic_data
+  path_mapping_tables: ./resources/mapping_tables
+  path_custom_vocabularies: ./resources/custom_vocabularies
 custom_vocabulary_loading:
   skip_vocabulary_loading: True
   debug: False
 sql_parameters:
-  source_schema:              # only needed if reading from a database, otherwise omit
-  vocab_schema: vocab         # overrides the default schema name
-  target_schema : cdm         # overrides the default schema name
+  source_schema:        # only needed if reading from a database, otherwise omit
+  vocab_schema: vocab   # overrides the default schema name
+  target_schema : cdm   # overrides the default schema name
