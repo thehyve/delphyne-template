@@ -73,4 +73,4 @@ def main(database, username, password, hostname, port, source, debug, skipvocab)
 
 
 if __name__ == "__main__":
-    sys.exit(main(auto_envvar_prefix='ETL'))
+    sys.exit(main(auto_envvar_prefix='ETL'))  # TODO: review this, either add documentation or edit/remove
