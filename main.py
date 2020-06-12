@@ -46,7 +46,12 @@ logger = logging.getLogger(__name__)
               help='When provided, the loading and pre-processing '
                    'of source to target vocabularies is skipped')
 def main(database, username, password, hostname, port, source, debug, skipvocab):
+
     setup_logging(debug)
+
+    # load configuration file
+    with open(config_file_path) as ymlfile:
+       cfg = yaml.load(ymlfile)
 
     # Test database connection
     uri = f'postgresql://{username}:{password}@{hostname}:{port}/{database}'
@@ -55,7 +60,7 @@ def main(database, username, password, hostname, port, source, debug, skipvocab)
 
     db = Database(uri)
 
-    etl = Wrapper(db, source, debug)
+    etl = Wrapper(db, source, cfg)
     if skipvocab:
         etl.do_skip_vocabulary_loading()
 

@@ -29,18 +29,17 @@ logger = logging.getLogger(__name__)
 
 class Wrapper(BaseWrapper):
 
-    def __init__(self, config_file_path : str):
-        self.config = yaml.load(Path(config_file_path))  # TODO: move to wrapper package
-        super().__init__(database=self.config['database'], cdm=hybrid, sql_parameters=self.config['sql_parameters'])
-        # load config file
-        self.source_folder = Path(self.config['file_paths']['path_source_folder'])
-        self.path_mapping_tables = Path(self.config['file_paths']['path_mapping_tables'])
-        self.path_custom_vocabularies = Path(self.config['file_paths']['path_custom_vocabularies'])
-        self.skip_vocabulary_loading = self.config['custom_vocabulary_loading'].getboolean('skip_vocabulary_loading', fallback=True)
+    def __init__(self, config):
+        super().__init__(database=config['database'], cdm=hybrid, sql_parameters=config['sql_parameters'])
+        # load config settings
+        self.source_folder = Path(config['file_paths']['path_source_folder'])
+        self.path_mapping_tables = Path(config['file_paths']['path_mapping_tables'])
+        self.path_custom_vocabularies = Path(config['file_paths']['path_custom_vocabularies'])
+        self.skip_vocabulary_loading = config['custom_vocabulary_loading'].getboolean('skip_vocabulary_loading', fallback=True)
         # load data to objects
-        self.variable_concept_mapper = VariableConceptMapper(self.config['path_mapping_tables'])
-        self.ontology_concept_mapper = OntologyConceptMapper(self.config['path_mapping_tables'])
-        self.regimen_exposure_mapper = RegimenExposureMapper(self.config['path_mapping_tables'])
+        self.variable_concept_mapper = VariableConceptMapper(self.path_mapping_tables)
+        self.ontology_concept_mapper = OntologyConceptMapper(self.path_mapping_tables)
+        self.regimen_exposure_mapper = RegimenExposureMapper(self.path_mapping_tables)
         # TODO: better way of doing this, e.g. systematically add all available from source folder?
         # NOTE: replace the following with project-specific source table names!
         self.sample_source_table = None
@@ -119,4 +118,4 @@ class Wrapper(BaseWrapper):
 
         session.commit()
         session.close()
-        self.load_concept_from_csv(PATH_CUSTOM_VOCABULARY) # TODO: put this in a config file with the previous two (XXX_concept.tsv)
+        self.load_concept_from_csv(self.path_custom_vocabularies)
