@@ -15,8 +15,6 @@
 # !/usr/bin/env python3
 from pathlib import Path
 import logging
-import yaml
-
 from omop_etl_wrapper import Wrapper as BaseWrapper # TODO: check import location
 from omop_etl_wrapper.cdm import hybrid # TODO: customize CDM version
 from src.main.python.transformation import *

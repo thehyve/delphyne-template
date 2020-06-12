@@ -18,6 +18,7 @@ import logging
 import sys
 import traceback
 import click
+import yaml
 from omop_etl_wrapper import Database, setup_logging # TODO: check correct dependency names and locations
 from src.main.python.wrapper import Wrapper
 
