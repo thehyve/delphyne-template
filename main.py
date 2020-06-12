@@ -19,7 +19,7 @@ import sys
 import traceback
 import click
 import yaml
-from omop_etl_wrapper import Database, setup_logging # TODO: check correct dependency names and locations
+from omop_etl_wrapper import Database, setup_logging # TODO: change logging import
 from src.main.python.wrapper import Wrapper
 
 __version__ = '0.1.0'
@@ -69,4 +69,4 @@ def main(config_file_path):
 
 
 if __name__ == "__main__":
-    sys.exit(main(auto_envvar_prefix='ETL'))
+    sys.exit(main(auto_envvar_prefix='ETL'))  # TODO: review this, either add documentation or edit/remove
