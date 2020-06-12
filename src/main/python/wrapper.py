@@ -60,13 +60,13 @@ class Wrapper(BaseWrapper):
     def do_skip_vocabulary_loading(self, skip_vocab=True):
         self.skip_vocabulary_loading = skip_vocab
 
-    def _load_source_files(self, pattern: str = '*') -> Dict :
+    def _load_source_files(self, pattern: str = '*') -> Dict : # TODO: move this method (and dependencies) to BaseWrapper
         '''
         When the preload_source_files option is on, 
         returns a dictionary of SourceData objects for each source data file included in the source folder.
         If a list of source files to load is available, it only loads the files in that list, ignoring the rest. 
 
-        To match a specific filename pattern, you can provide an optional pattern string argument. 
+        You can customize the method by providing a more selective string to the `pattern` parameter. 
         '''
         source_dict = {}
         if self.preload_source_files:
