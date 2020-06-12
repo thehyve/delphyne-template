@@ -19,7 +19,7 @@ import logging
 from omop_etl_wrapper import Wrapper as BaseWrapper # TODO: check import location
 from omop_etl_wrapper.cdm import hybrid # TODO: customize CDM version
 from src.main.python.transformation import *
-from src.main.python.model.SourceData import SourceData # TODO: use local version for the moment, will be made general (for data files & database)
+from src.main.python.util import SourceData # TODO: use local version for the moment, will be made general (for data files & database)
 from src.main.python.util import VariableConceptMapper # TODO: add to package?
 from src.main.python.util import OntologyConceptMapper # TODO: add to package?
 from src.main.python.util import RegimenExposureMapper # TODO: add to package?
@@ -43,8 +43,11 @@ class Wrapper(BaseWrapper):
 
     def __init__(self, database, source_folder, debug=False): # TODO: check use of debug argument (e.g. CLLEAR)
         super().__init__(database=database, cdm=hybrid, sql_parameters=sql_parameters)
-        self.source_folder = Path(source_folder)
+        self.source_folder = Path(source_folder)  # TODO: move to config
+        self.load_source_list = []  # TODO: move to config
+        self.preload_source_files = True  # TODO: move to config
         self.skip_vocabulary_loading = False
+        self.preloaded_source_files = self._load_source_files()
         self.variable_concept_mapper = VariableConceptMapper(PATH_MAPPING_TABLES)
         self.ontology_concept_mapper = OntologyConceptMapper(PATH_MAPPING_TABLES)
         self.regimen_exposure_mapper = RegimenExposureMapper(PATH_MAPPING_TABLES)
@@ -55,6 +58,17 @@ class Wrapper(BaseWrapper):
     # TODO: make this a base Wrapper method? since used only once during setup, I would actually make the method
     def do_skip_vocabulary_loading(self, skip_vocab=True):
         self.skip_vocabulary_loading = skip_vocab
+
+    def _load_sources(self): # TODO: test this + add config
+        source_dict = {}
+        if self.preload_source_files == True:
+            for source_file in self.source_folder:
+                if not config.load_source_list or source in self.load_source_list:
+                    source_dict[source_file] = SourceData(self.source_folder / source_file)
+        return source_dict
+
+    def get_source_data(self, source_file):
+        return self.source_dict[source_file] if source_file in self.source_dict.keys() else SourceData(self.source_folder / source_file)
 
     def run(self):
 
@@ -90,13 +104,6 @@ class Wrapper(BaseWrapper):
             logger.info("Permissions granted to HONEUR admin and app roles")
         except:
             logger.error("Failed to grant permissions to HONEUR admin and app roles")
-
-    # TODO: change the following to load these programmatically from a source data folder?
-    # NOTE: replace the following with project-specific source tables and function names!
-    def get_sample_source_table(self):
-        if not self.sample_source_table:
-            self.sample_source_table = SourceData(self.source_folder / 'sample_source_table.csv')
-        return self.sample_source_table
 
     # TODO: add this to Wrapper methods? note that any custom vocabulary will be available in resources/custom_vocabularies,
     #  so rewriting the details here is completely unnecessary
