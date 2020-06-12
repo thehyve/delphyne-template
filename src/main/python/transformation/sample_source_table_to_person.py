@@ -17,8 +17,8 @@ import pandas as pd
 
 from omop_etl_wrapper.cdm import Person # TODO: check dependency location
 # sample functions, remove if not used
-from ..util import create_person_id_from_subject_id
-from ..util import get_datetime
+from src.main.python.util import create_person_id_from_subject_id
+from src.main.python.util import get_datetime
 
 
 def sample_source_table_to_person(wrapper) -> List[Person]:
