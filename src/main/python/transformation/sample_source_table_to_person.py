@@ -23,7 +23,7 @@ from ..util import get_datetime
 
 def sample_source_table_to_person(wrapper) -> List[Person]:
 
-    source = pd.DataFrame(wrapper.get_sample_source_table())
+    source = pd.DataFrame(wrapper.get_source_data('sample_source_file.csv'))
 
     # The use of DataFrame objects is recommended for:
     # - data filtering

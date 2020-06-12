@@ -62,8 +62,8 @@ class Wrapper(BaseWrapper):
     def _load_sources(self): # TODO: test this + add config
         source_dict = {}
         if self.preload_source_files == True:
-            for source_file in self.source_folder:
-                if not config.load_source_list or source in self.load_source_list:
+            for source_file in self.source_folder: #TODO: check how this works with paths
+                if not self.load_source_list or source_file in self.load_source_list:
                     source_dict[source_file] = SourceData(self.source_folder / source_file)
         return source_dict
 
