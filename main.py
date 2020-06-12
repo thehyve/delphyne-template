@@ -32,11 +32,17 @@ logger = logging.getLogger(__name__)
               type=click.Path(file_okay=False, exists=True, readable=True))
 def main(config_file_path):
 
-    setup_logging(debug)
-
-    # load configuration file
+    # Load configuration
     with open(config_file_path) as ymlfile:
        config = yaml.load(ymlfile)
+
+    setup_logging(config['optional'].getboolean('debug', fallback=False))
+    
+    hostname = config['connection']['hostname']
+    port =     config['connection']['port']
+    database = config['connection']['database']
+    username = config['connection']['username']
+    password = config['connection']['password']    
 
     # Test database connection
     uri = f'postgresql://{username}:{password}@{hostname}:{port}/{database}'
@@ -45,8 +51,8 @@ def main(config_file_path):
 
     db = Database(uri)
 
-    etl = Wrapper(db, source, cfg)
-    if skipvocab:
+    etl = Wrapper(db, config)
+    if config['optional'].getboolean('skip_vocabulary_loading', fallback=False):
         etl.do_skip_vocabulary_loading()
 
     logger.info('ETL version {}'.format(__version__))
