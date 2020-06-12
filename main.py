@@ -26,33 +26,17 @@ __version__ = '0.1.0'
 
 logger = logging.getLogger(__name__)
 
-# TODO: change to use config file
 @click.command()
-@click.option('--hostname', '-h', default='localhost', metavar='<host>',
-              help='Database server host or socket directory (localhost)')
-@click.option('--port', '-p', default='5432', metavar='<port>', type=int,
-              help='Database server port (5432)')
-@click.option('--database', '-d', default='etl', metavar='<database>',
-              help='Database name to connect to (etl)')
-@click.option('--username', '-u', default='postgres', metavar='<username>',
-              help='Database user name (postgres)')
-@click.option('--password', '-w', default='', metavar='<pw>',
-              help='User password ()')
-@click.option('--source', '-s', required=True, metavar='<folder_name>',
-              type=click.Path(file_okay=False, exists=True, readable=True),
-              help='Folder containing the source data tables as csv.')
-@click.option('--debug', default=False, metavar='<debug_mode>', is_flag=True,
-              help='In debug mode, the table constraints are applied before loading')
-@click.option('--skipvocab', default=False, metavar='<skip_vocab>', is_flag=True,
-              help='When provided, the loading and pre-processing '
-                   'of source to target vocabularies is skipped')
-def main(database, username, password, hostname, port, source, debug, skipvocab):
+@click.option('--config', '-c', required=True, metavar='<config_file_path>',
+              help='Configuration file path in yaml format (./config/config.yml)',
+              type=click.Path(file_okay=False, exists=True, readable=True))
+def main(config_file_path):
 
     setup_logging(debug)
 
     # load configuration file
     with open(config_file_path) as ymlfile:
-       cfg = yaml.load(ymlfile)
+       config = yaml.load(ymlfile)
 
     # Test database connection
     uri = f'postgresql://{username}:{password}@{hostname}:{port}/{database}'
