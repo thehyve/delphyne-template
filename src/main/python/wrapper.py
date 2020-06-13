@@ -65,7 +65,7 @@ class Wrapper(BaseWrapper):
 
         # Transformations - make sure execution follows order of table dependencies (see cdm model)
         logger.info('{:-^100}'.format(' ETL '))
-        # NOTE: replace the following with project-specific transformations from the transformations/ folder!
+        # NOTE: replace the following with project-specific transformations from the python/transformations/ or sql/ folder!
         self.execute_transformation(sample_source_table_to_person)
         self.execute_sql_file(self.path_sql_transformations / 'sample_script.sql') 
 
