@@ -47,6 +47,7 @@ class Wrapper(BaseWrapper):
         self.source_folder = Path(source_folder)  # TODO: move to config
         self.preload_source_files = True  # TODO: move to config
         self.preload_source_file_list = []  # TODO: move to config
+        self.source_file_delimiter = ',' # TODO: move to config
         self.skip_vocabulary_loading = False
         self.preloaded_source_files = self._load_source_files()
         self.variable_concept_mapper = VariableConceptMapper(PATH_MAPPING_TABLES)
@@ -70,11 +71,12 @@ class Wrapper(BaseWrapper):
             for source_file in self.source_folder.glob(pattern):
                 source_file_name = source_file.name
                 if not self.preload_source_file_list or source_file_name in self.preload_source_file_list:
-                    source_dict[source_file_name] = SourceData(source_file)
+                    source_dict[source_file_name] = SourceData(source_file, self.source_file_delimiter)
         return source_dict
 
     def get_source_data(self, source_file):
-        return self.source_dict[source_file] if source_file in self.source_dict.keys() else SourceData(self.source_folder / source_file)
+        return self.source_dict[source_file] if source_file in self.source_dict.keys() \
+            else SourceData(self.source_folder / source_file, self.source_file_delimiter)
 
     def run(self):
 

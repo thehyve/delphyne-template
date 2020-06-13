@@ -21,6 +21,7 @@ import click
 from omop_etl_wrapper import Database, setup_logging # TODO: check correct dependency names and locations
 from src.main.python.wrapper import Wrapper
 
+
 __version__ = '0.1.0'
 
 logger = logging.getLogger(__name__)

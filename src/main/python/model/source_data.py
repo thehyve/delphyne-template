@@ -20,17 +20,16 @@ import csv
 class SourceData(object):
     """ Base object for reading source data file """
 
-    def __init__(self, source_file_path):
+    def __init__(self, source_file_path, delimiter):
         self.data_dicts = []  # list of dictionaries
-
-        self.load(source_file_path)
+        self.load(source_file_path, delimiter)
 
     def __iter__(self):
         yield from self.data_dicts
 
-    def load(self, source_file_path):
+    def load(self, source_file_path, delimiter):
         with open(source_file_path) as f_in:
-            self.data_dicts = [CaseInsensitiveDict(col) for col in csv.DictReader(f_in, delimiter=',')]
+            self.data_dicts = [CaseInsensitiveDict(col) for col in csv.DictReader(f_in, delimiter=delimiter)]
 
 
 class CaseInsensitiveDict(dict):
@@ -59,6 +58,6 @@ class CaseInsensitiveDict(dict):
 
 
 if __name__ == '__main__':
-    source_data = SourceData('./resources/synthetic_data/sample_source_file.csv')
+    source_data = SourceData('./resources/synthetic_data/sample_source_file.csv', delimiter=',')
     items = source_data.__iter__()
     item = next(items)
