@@ -1,20 +1,19 @@
-connection:
-  hostname: localhost   # Database server host or socket directory
-  port: 5432            # Database server port
-  database: etl         # Database name to connect to
-  username: postgres    # Database user name
-  password: postgres    # User password
-    
-file_paths:
-  path_source_folder: ./resources/synthetic_data
-  path_mapping_tables: ./resources/mapping_tables
-  path_custom_vocabularies: ./resources/custom_vocabularies
-
-sql_parameters:
-  source_schema:        # only needed if reading from a database, otherwise omit
-  vocab_schema: vocab   # overrides the default schema name
-  target_schema : cdm   # overrides the default schema name
-
-optional:
-  skip_vocabulary_loading: True
-  debug: False
+main:
+  connection:
+    hostname: 'localhost'   # Database server host or socket directory
+    port:     '5432'        # Database server port
+    database: 'etl'         # Database name to connect to
+    username: 'postgres'    # Database user name
+    password: 'postgres'    # User password
+  options:
+    skip_vocabulary_loading: True
+    debug: False
+etl:
+  file_paths:
+    path_source_folder:       './resources/synthetic_data'
+    path_mapping_tables:      './resources/mapping_tables'
+    path_custom_vocabularies: './resources/custom_vocabularies'
+  sql_parameters:
+    source_schema:  ''      # only needed if reading from a database, otherwise omit
+    target_schema : 'cdm'   # overrides the default (non-vocabulary) schema name
+    vocab_schema:   'vocab' # overrides the default vocabulary schema name
