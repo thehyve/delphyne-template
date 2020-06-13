@@ -35,7 +35,7 @@ class Wrapper(BaseWrapper):
         self.source_folder = Path(config['file_paths']['path_source_folder'])
         self.path_mapping_tables = Path(config['file_paths']['path_mapping_tables'])
         self.path_custom_vocabularies = Path(config['file_paths']['path_custom_vocabularies'])
-        self.skip_vocabulary_loading = config['optional'].getboolean('skip_vocabulary_loading', fallback=True)
+        self.skip_vocabulary_loading = False
         # Load data to objects
         self.variable_concept_mapper = VariableConceptMapper(self.path_mapping_tables)
         self.ontology_concept_mapper = OntologyConceptMapper(self.path_mapping_tables)
