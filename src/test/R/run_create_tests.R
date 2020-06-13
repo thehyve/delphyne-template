@@ -16,11 +16,14 @@ library(yaml)
 config <- yaml.load_file('config.yml')
 
 # Initialize the framework once -------------------------------------------
+# NOTE: remove initFramework() from TestFramework.R, otherwise it resets with every import!
 source('TestFramework.R')
-initFramework() # NOTE: remove initFramework() from TestFramework.R, otherwise it resets with every import!
+initFramework() 
+# NOTE: add any custom table here! (remove the following if unused)
+source('custom_tables/TreatmentLine.R')
 
 # Import test cases ------------------------------------------------------------
-# NOTE: add your test cases here!
+# NOTE: add your test cases here! (remove the following)
 source('test_cases/test_sample_source_to_person.R')
 
 # Generate source csv files -----------------------------------------------------

@@ -22,6 +22,7 @@ src/test/R/errorReport.txt
 
 # User-specific stuff
 .idea/
+.vscode/
 
 # Python
 .ipynb_checkpoints
