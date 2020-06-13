@@ -35,6 +35,7 @@ class Wrapper(BaseWrapper):
         self.source_folder = Path(config['file_paths']['path_source_folder'])
         self.path_mapping_tables = Path(config['file_paths']['path_mapping_tables'])
         self.path_custom_vocabularies = Path(config['file_paths']['path_custom_vocabularies'])
+        self.path_sql_transformations = Path(config['file_paths']['path_sql_transformations'])
         self.skip_vocabulary_loading = False
         # Load data to objects
         self.variable_concept_mapper = VariableConceptMapper(self.path_mapping_tables)
@@ -66,7 +67,7 @@ class Wrapper(BaseWrapper):
         logger.info('{:-^100}'.format(' ETL '))
         # NOTE: replace the following with project-specific transformations from the transformations/ folder!
         self.execute_transformation(sample_source_table_to_person)
-        self.execute_sql_file('./src/main/sql/sample_script.sql')
+        self.execute_sql_file(self.path_sql_transformations / 'sample_script.sql') 
 
         self.log_summary()
         self.log_runtime()
