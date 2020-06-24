@@ -31,7 +31,7 @@ class Wrapper(BaseWrapper):
     def __init__(self, config):
         super().__init__(config)
         # Load config settings
-        self.source_folder = Path(config['file_paths']['path_source_folder'])
+        self.source_folder = Path(config['run_options']['source_data_folder'])
         self.path_mapping_tables = Path(config['file_paths']['path_mapping_tables'])
         self.path_custom_vocabularies = Path(config['file_paths']['path_custom_vocabularies'])
         self.path_sql_transformations = Path(config['file_paths']['path_sql_transformations'])
