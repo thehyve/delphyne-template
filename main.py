@@ -18,10 +18,13 @@ import logging
 import sys
 import traceback
 import click
+import getpass
+from pathlib import Path
 from omop_etl_wrapper.util.io import read_yaml_file
-from omop_etl_wrapper.log import setup_logging
+from omop_etl_wrapper.log.setup_logging import setup_logging
 from omop_etl_wrapper import Database
 from src.main.python.wrapper import Wrapper
+
 
 __version__ = '0.1.0'
 
@@ -30,11 +33,11 @@ logger = logging.getLogger(__name__)
 @click.command()
 @click.option('--config', '-c', required=True, metavar='<config_file_path>',
               help='Path to the yaml configuration file.',
-              type=click.Path(file_okay=False, exists=True, readable=True))
-def main(config_file_path):
+              type=click.Path(file_okay=True, exists=True, readable=True))
+def main(config):
 
     # Load configuration
-    config = read_yaml_file(Path(config_file_path))
+    config = read_yaml_file(Path(config))
 
     # Setup logging
     debug: bool = config['run_options']['debug_mode']
@@ -42,7 +45,7 @@ def main(config_file_path):
 
     # Test database connection
     # TODO: keep here or move to wrapper? (useful to check before attempting etl run.. -> discuss change in test branch by Stefan
-    hostname = config['database']['hostname']
+    hostname = config['database']['host']
     port     = config['database']['port']
     database = config['database']['database_name']
     username = config['database']['username']
