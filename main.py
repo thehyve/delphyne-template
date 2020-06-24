@@ -16,13 +16,11 @@
 
 import logging
 import sys
-import traceback
 import click
-import getpass
+from getpass import getpass
 from pathlib import Path
 from omop_etl_wrapper.util.io import read_yaml_file
 from omop_etl_wrapper.log.setup_logging import setup_logging
-from omop_etl_wrapper import Database
 from src.main.python.wrapper import Wrapper
 
 
@@ -38,6 +36,8 @@ def main(config):
 
     # Load configuration
     config = read_yaml_file(Path(config))
+    if 'password' not in config['database']:
+        config['database']['password'] = getpass('Database password:')
 
     # Setup logging
     debug: bool = config['run_options']['debug_mode']
@@ -45,6 +45,7 @@ def main(config):
 
     # Initialize ETL with configuration parameters
     etl = Wrapper(config)
+    # TODO: cleanup this
     if config['run_options']['skip_vocabulary_loading']:
         etl.do_skip_vocabulary_loading()
 
@@ -56,13 +57,7 @@ def main(config):
     #     logger.info('Git HEAD at ' + etl.get_git_tag_or_branch())
 
     # Run ETL
-    # TODO: shouldn't any error be already captured by logger?
-    try:
-        etl.run()
-    except Exception as err:
-        logger.error('##### FATAL ERROR. TRACEBACK: #####')
-        logger.error(traceback.format_exc())
-        raise err
+    etl.run()
 
 if __name__ == "__main__":
     sys.exit(main())
