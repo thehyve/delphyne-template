@@ -4,6 +4,8 @@ from sqlalchemy.orm import relationship
 from omop_etl_wrapper import Base
 
 
+# TODO: why is {'schema' : 'cdm'} but FK relationships use 'cdm_schema'?
+
 class Person2(Base):
     __tablename__ = 'person2'
     __table_args__ = {'schema': 'cdm'}
@@ -34,12 +36,12 @@ class TreatmentLine(Base):
     __table_args__ = {'schema': 'cdm'}
 
     treatment_line_id = Column(Integer, primary_key=True)
-    person_id = Column(ForeignKey('public.person.person_id'), nullable=False, index=True)
+    person_id = Column(ForeignKey('cdm_schema.person.person_id'), nullable=False, index=True)
     line_number = Column(Integer, nullable=True)
     total_cycle_number = Column(Integer, nullable=True)
     line_start_date = Column(Date, nullable=True)
     line_end_date = Column(Date, nullable=True)
-    drug_concept_id = Column(ForeignKey('vocab.concept.concept_id'), index=True)
+    drug_concept_id = Column(ForeignKey('vocabulary_schema.concept.concept_id'), index=True)
     drug_era_start_date = Column(Date, nullable=True)
     drug_era_end_date = Column(Date, nullable=True)
     drug_exposure_count = Column(Integer, nullable=True)
