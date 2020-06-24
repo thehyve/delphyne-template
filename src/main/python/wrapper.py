@@ -17,7 +17,6 @@
 from pathlib import Path
 import logging
 from omop_etl_wrapper import Wrapper as BaseWrapper # TODO: check import location
-from omop_etl_wrapper.cdm import hybrid # TODO: make this configurable (needs wrapper package changes)
 from src.main.python.transformation import *
 from src.main.python.model.sourcedata import SourceData # TODO: use local version for the moment, will be made general (for data files & database)
 from src.main.python.util import VariableConceptMapper # TODO: add to package?
@@ -29,8 +28,8 @@ logger = logging.getLogger(__name__)
 
 class Wrapper(BaseWrapper):
 
-    def __init__(self, database, config):
-        super().__init__(database=database, cdm=hybrid, sql_parameters=config['sql_parameters'])
+    def __init__(self, config):
+        super().__init__(config)
         # Load config settings
         self.source_folder = Path(config['file_paths']['path_source_folder'])
         self.path_mapping_tables = Path(config['file_paths']['path_mapping_tables'])
