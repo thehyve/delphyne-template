@@ -19,7 +19,7 @@ import logging
 from omop_etl_wrapper import Wrapper as BaseWrapper # TODO: check import location
 from omop_etl_wrapper.cdm import hybrid # TODO: make this configurable (needs wrapper package changes)
 from src.main.python.transformation import *
-from src.main.python.model.SourceData import SourceData # TODO: use local version for the moment, will be made general (for data files & database)
+from src.main.python.model.sourcedata import SourceData # TODO: use local version for the moment, will be made general (for data files & database)
 from src.main.python.util import VariableConceptMapper # TODO: add to package?
 from src.main.python.util import OntologyConceptMapper # TODO: add to package?
 from src.main.python.util import RegimenExposureMapper # TODO: add to package?
