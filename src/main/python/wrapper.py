@@ -70,7 +70,7 @@ class Wrapper(BaseWrapper):
             logger.info('Loading custom concepts')
             self.create_custom_vocabulary()
 
-        # Load stem tables
+        # Load source to concept mappings
         self.truncate_stcm_table()
         self.load_stcm()
 
