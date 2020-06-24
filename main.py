@@ -16,9 +16,11 @@
 
 import logging
 import sys
-import traceback
 import click
-from omop_etl_wrapper import Database, setup_logging # TODO: change logging import
+from getpass import getpass
+from pathlib import Path
+from omop_etl_wrapper.util.io import read_yaml_file
+from omop_etl_wrapper.log.setup_logging import setup_logging
 from src.main.python.wrapper import Wrapper
 
 
@@ -26,52 +28,35 @@ __version__ = '0.1.0'
 
 logger = logging.getLogger(__name__)
 
-# TODO: change to use config file
 @click.command()
-@click.option('--hostname', '-h', default='localhost', metavar='<host>',
-              help='Database server host or socket directory (localhost)')
-@click.option('--port', '-p', default='5432', metavar='<port>', type=int,
-              help='Database server port (5432)')
-@click.option('--database', '-d', default='etl', metavar='<database>',
-              help='Database name to connect to (etl)')
-@click.option('--username', '-u', default='postgres', metavar='<username>',
-              help='Database user name (postgres)')
-@click.option('--password', '-w', default='', metavar='<pw>',
-              help='User password ()')
-@click.option('--source', '-s', required=True, metavar='<folder_name>',
-              type=click.Path(file_okay=False, exists=True, readable=True),
-              help='Folder containing the source data tables as csv.')
-@click.option('--debug', default=False, metavar='<debug_mode>', is_flag=True,
-              help='In debug mode, the table constraints are applied before loading')
-@click.option('--skipvocab', default=False, metavar='<skip_vocab>', is_flag=True,
-              help='When provided, the loading and pre-processing '
-                   'of source to target vocabularies is skipped')
-def main(database, username, password, hostname, port, source, debug, skipvocab):
+@click.option('--config', '-c', required=True, metavar='<config_file_path>',
+              help='Path to the yaml configuration file.',
+              type=click.Path(file_okay=True, exists=True, readable=True))
+def main(config):
+
+    # Load configuration
+    config = read_yaml_file(Path(config))
+    if 'password' not in config['database']:
+        config['database']['password'] = getpass('Database password:')
+
+    # Setup logging
+    debug: bool = config['run_options']['debug_mode']
     setup_logging(debug)
 
-    # Test database connection
-    uri = f'postgresql://{username}:{password}@{hostname}:{port}/{database}'
-    if not Database.can_connect(uri):
-        return
+    # Initialize ETL with configuration parameters
+    etl = Wrapper(config)
 
-    db = Database(uri)
-
-    etl = Wrapper(db, source, debug)
-    if skipvocab:
-        etl.do_skip_vocabulary_loading()
-
+    # TODO: ok to log this here? shall we log it next to wrapper version info?
     logger.info('ETL version {}'.format(__version__))
+
+    # TODO: any situation where we want to use the following? if so, make sure it is part of wrapper code
     # if etl.is_git_repo():
     #     logger.info('Git HEAD at ' + etl.get_git_tag_or_branch())
 
     # Run ETL
-    try:
-        etl.run()
-    except Exception as err:
-        logger.error('##### FATAL ERROR. TRACEBACK: #####')
-        logger.error(traceback.format_exc())
-        raise err
-
+    etl.run()
 
 if __name__ == "__main__":
-    sys.exit(main(auto_envvar_prefix='ETL'))  # TODO: review this, either add documentation or edit/remove
+    sys.exit(main())
+    # TODO: some projects use main(auto_envvar_prefix='ETL'), even if it's not a click parameter;
+    #  understand use and either document or remove

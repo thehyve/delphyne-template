@@ -13,14 +13,13 @@
 # GNU General Public License for more details.
 
 # !/usr/bin/env python3
+
 from pathlib import Path
 from typing import Dict
 import logging
-
-from omop_etl_wrapper import Wrapper as BaseWrapper # TODO: check import location
-from omop_etl_wrapper.cdm import hybrid # TODO: customize CDM version
+from omop_etl_wrapper import Wrapper as BaseWrapper
 from src.main.python.transformation import *
-from src.main.python.model import SourceData # TODO: use local version for the moment, will be added to wrapper package
+from src.main.python.model import SourceData
 from src.main.python.util import VariableConceptMapper # TODO: add to package?
 from src.main.python.util import OntologyConceptMapper # TODO: add to package?
 from src.main.python.util import RegimenExposureMapper # TODO: add to package?
@@ -28,35 +27,32 @@ from src.main.python.util import RegimenExposureMapper # TODO: add to package?
 
 logger = logging.getLogger(__name__)
 
-# TODO: use config.yml file instead?
-PATH_MAPPING_TABLES = Path('./resources/mapping_tables')
-PATH_CUSTOM_VOCABULARY = Path('./resources/custom_vocabulary/')
-
-# TODO: remove the following once part of config
-sql_parameters = {
-    # 'source_schema' : '', # only needed if reading from a database, otherwise omit
-    'vocab_schema' : 'vocab',  # use it to override the default schema name
-    'target_schema' : 'my_schema'
-}
-
-
 class Wrapper(BaseWrapper):
-
-    def __init__(self, database, source_folder, debug=False): # TODO: check use of debug argument (e.g. CLLEAR)
-        super().__init__(database=database, cdm=hybrid, sql_parameters=sql_parameters)
-        self.source_folder = Path(source_folder)  # TODO: move to config
+    def __init__(self, config):
+        super().__init__(config)
+        # Load config settings
+        self.source_folder = Path(config['run_options']['source_data_folder'])
+        self.path_mapping_tables = Path('./resources/mapping_tables')
+        self.path_custom_vocabularies = Path('./resources/custom_vocabularies')
+        self.path_sql_transformations = Path('./src/main/sql')
         self.preload_source_files = True  # TODO: move to config
         self.preload_source_file_list = []  # TODO: move to config
-        self.source_file_delimiter = ',' # TODO: move to config
-        self.skip_vocabulary_loading = False
-        self.preloaded_source_files = self._load_source_files()
-        self.variable_concept_mapper = VariableConceptMapper(PATH_MAPPING_TABLES)
-        self.ontology_concept_mapper = OntologyConceptMapper(PATH_MAPPING_TABLES)
-        self.regimen_exposure_mapper = RegimenExposureMapper(PATH_MAPPING_TABLES)
+        self.source_file_delimiter = ','  # TODO: move to config
+        self.source_file_dict = self._load_source_files()
+        self.skip_vocabulary_loading: bool = config['run_options']['skip_vocabulary_loading']
+        # Load data to objects
+        # self.variable_concept_mapper = VariableConceptMapper(self.path_mapping_tables)
+        # self.ontology_concept_mapper = OntologyConceptMapper(self.path_mapping_tables)
+        # self.regimen_exposure_mapper = RegimenExposureMapper(self.path_mapping_tables)
+        # NOTE: replace the following with project-specific source table names!
 
-    # TODO: make this a base Wrapper method? since used only once during setup, I would actually make the method
-    def do_skip_vocabulary_loading(self, skip_vocab=True):
-        self.skip_vocabulary_loading = skip_vocab
+    def transform(self):
+
+        # NOTE: replace the following with project-specific transformations from python/transformations/ or sql/ folder!
+        # make sure execution follows order of table dependencies (see cdm model)
+        self.execute_transformation(dm_to_person)
+        self.execute_transformation(sample_source_table_to_person)
+        # self.execute_sql_file(self.path_sql_transformations / 'sample_script.sql')
 
     def _load_source_files(self, pattern: str = '*') -> Dict : # TODO: move this method (and dependencies) to BaseWrapper
         '''
@@ -66,28 +62,29 @@ class Wrapper(BaseWrapper):
 
         You can customize the method by providing a more selective string to the `pattern` parameter. 
         '''
-        source_dict = {}
+        source_file_dict = {}
         if self.preload_source_files:
             for source_file in self.source_folder.glob(pattern):
                 source_file_name = source_file.name
                 if not self.preload_source_file_list or source_file_name in self.preload_source_file_list:
-                    source_dict[source_file_name] = SourceData(source_file, self.source_file_delimiter)
-        return source_dict
+                    source_file_dict[source_file_name] = SourceData(source_file, self.source_file_delimiter)
+        return source_file_dict
 
     def get_source_data(self, source_file):
-        return self.source_dict[source_file] if source_file in self.source_dict.keys() \
+        return self.source_file_dict[source_file] if source_file in self.source_file_dict.keys() \
             else SourceData(self.source_folder / source_file, self.source_file_delimiter)
 
     def run(self):
 
-        self.start_timing()
+        # self.start_timing()
 
         logger.info('{:-^100}'.format(' Source Counts '))
-        self.log_tables_rowcounts(self.source_folder)
+        # self.log_tables_rowcounts(self.source_folder)
 
         logger.info('{:-^100}'.format(' Setup '))
 
         # Prepare source
+        self.create_schemas()
         self.drop_cdm()
         self.create_cdm()
 
@@ -96,14 +93,24 @@ class Wrapper(BaseWrapper):
             logger.info('Loading custom concepts')
             self.create_custom_vocabulary()
 
-        # Transformations - make sure execution follows order of table dependencies (see cdm model)
-        logger.info('{:-^100}'.format(' ETL '))
-        # NOTE: replace the following with project-specific transformations from the transformations/ folder!
-        self.execute_transformation(sample_source_table_to_person)
-        self.execute_sql_file('./src/main/sql/sample_script.sql')
+        # Load stem tables
+        self.truncate_stcm_table()
+        self.load_stcm()
 
-        self.log_summary()
-        self.log_runtime()
+        # Load source data
+
+        logger.info('{:-^100}'.format(' ETL '))
+
+        # These queries are cdm6 specific
+        # self.stem_table_to_domains()
+
+        self.transform()
+
+        self.etl_stats.write_summary_files()
+        self.etl_stats.log_summary()
+
+        # self.log_summary()
+        # self.log_runtime()
 
         # TODO: can this be made into a general function, or too project-specific? remove?
         try:
@@ -141,4 +148,4 @@ class Wrapper(BaseWrapper):
 
         session.commit()
         session.close()
-        self.load_concept_from_csv(PATH_CUSTOM_VOCABULARY) # TODO: put this in a config file with the previous two (XXX_concept.tsv)
+        self.load_concept_from_csv(self.path_custom_vocabularies)

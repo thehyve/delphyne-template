@@ -12,18 +12,27 @@
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
 
-from typing import List
+from __future__ import annotations
+
+from typing import List, TYPE_CHECKING
+
+from omop_etl_wrapper.cdm.hybrid import Person
+# from omop_etl_wrapper.cdm.cdm531 import Person
+# from omop_etl_wrapper.cdm.cdm600 import Person
+
+# sample functions, remove if not used
+from ..util import create_person_id_from_subject_id
+from ..util import get_datetime
 import pandas as pd
 
-from omop_etl_wrapper.cdm import Person # TODO: check dependency location
-# sample functions, remove if not used
-from src.main.python.util import create_person_id_from_subject_id
-from src.main.python.util import get_datetime
+
+if TYPE_CHECKING:
+    from src.main.python.wrapper import Wrapper
 
 
-def sample_source_table_to_person(wrapper) -> List[Person]:
+def sample_source_table_to_person(wrapper: Wrapper) -> List[Person]:
 
-    source = pd.DataFrame(wrapper.get_source_data('sample_source_file.csv'))
+    source = pd.DataFrame(wrapper.get_source_data('sample_source_table.csv'))
 
     # The use of DataFrame objects is recommended for:
     # - data filtering
@@ -41,17 +50,16 @@ def sample_source_table_to_person(wrapper) -> List[Person]:
         r = Person(
             person_id=create_person_id_from_subject_id(row['subject_id']),
             gender_concept_id=row['sex'],
-            year_of_birth=get_datetime(['date_of_birth']).year,
+            year_of_birth=get_datetime(row['date_of_birth']).year,
             race_concept_id=0,
             ethnicity_concept_id=0,
-            care_site_id=row['care_site'],
+            care_site_id=None,
             person_source_value=row['subject_id'],
             gender_source_value=row['sex'],
             gender_source_concept_id=0,
             race_source_concept_id=0,
             ethnicity_source_concept_id=0
         )
-
         records.append(r)
 
     return records
