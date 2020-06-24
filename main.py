@@ -18,8 +18,9 @@ import logging
 import sys
 import traceback
 import click
-import yaml
-from omop_etl_wrapper import Database, setup_logging # TODO: change logging import
+from omop_etl_wrapper.util.io import read_yaml_file
+from omop_etl_wrapper.log import setup_logging
+from omop_etl_wrapper import Database
 from src.main.python.wrapper import Wrapper
 
 __version__ = '0.1.0'
@@ -28,38 +29,47 @@ logger = logging.getLogger(__name__)
 
 @click.command()
 @click.option('--config', '-c', required=True, metavar='<config_file_path>',
-              help='Configuration (yaml) file path (./config/config.yml)',
+              help='Path to the yaml configuration file.',
               type=click.Path(file_okay=False, exists=True, readable=True))
 def main(config_file_path):
 
     # Load configuration
-    with open(config_file_path) as ymlfile:
-       config = yaml.load(ymlfile)
+    config = read_yaml_file(Path(config_file_path))
 
-    setup_logging(config['main']['options']['debug'])
-    
-    hostname = config['main']['connection']['hostname']
-    port =     config['main']['connection']['port']
-    database = config['main']['connection']['database']
-    username = config['main']['connection']['username']
-    password = config['main']['connection']['password']    
+    # Setup logging
+    debug: bool = config['run_options']['debug_mode']
+    setup_logging(debug)
 
     # Test database connection
+    # TODO: keep here or move to wrapper? (useful to check before attempting etl run.. -> discuss change in test branch by Stefan
+    hostname = config['database']['hostname']
+    port     = config['database']['port']
+    database = config['database']['database_name']
+    username = config['database']['username']
+
+    if 'password' not in config['database']:
+        config['database']['password'] = getpass('Database password:')
+    else:
+        password = config['database']['password']
+
     uri = f'postgresql://{username}:{password}@{hostname}:{port}/{database}'
     if not Database.can_connect(uri):
         return
 
-    db = Database(uri)
-
-    etl = Wrapper(db, config['etl'])
-    if config['main']['options']['skip_vocabulary_loading']:
+    # Initialize ETL with configuration parameters
+    etl = Wrapper(config)
+    if config['run_options']['skip_vocabulary_loading']:
         etl.do_skip_vocabulary_loading()
 
+    # TODO: ok to log this here? shall we log it next to wrapper version info?
     logger.info('ETL version {}'.format(__version__))
+
+    # TODO: any situation where we want to use the following? if so, make sure it is part of wrapper code
     # if etl.is_git_repo():
     #     logger.info('Git HEAD at ' + etl.get_git_tag_or_branch())
 
     # Run ETL
+    # TODO: shouldn't any error be already captured by logger?
     try:
         etl.run()
     except Exception as err:
@@ -67,6 +77,7 @@ def main(config_file_path):
         logger.error(traceback.format_exc())
         raise err
 
-
 if __name__ == "__main__":
-    sys.exit(main(auto_envvar_prefix='ETL'))  # TODO: review this, either add documentation or edit/remove
+    sys.exit(main())
+    # TODO: some projects use main(auto_envvar_prefix='ETL'), even if it's not a click parameter;
+    #  understand use and either document or remove
