@@ -26,6 +26,7 @@ src/test/R/errorReport.txt
 
 # Python
 .ipynb_checkpoints
+__pycache__/
 
 # CMake
 cmake-build-*/
