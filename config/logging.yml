@@ -6,11 +6,12 @@ formatters:
 handlers:
   console:
     class: logging.StreamHandler
-    level: INFO
+    level: DEBUG
     formatter: standard
+    stream: ext://sys.stdout
   file:
     class: logging.FileHandler
-    level: INFO
+    level: DEBUG
     formatter: standard
     encoding: utf8
 
