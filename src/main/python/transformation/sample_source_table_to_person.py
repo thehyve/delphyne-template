@@ -15,7 +15,9 @@
 from typing import List
 import pandas as pd
 
-from omop_etl_wrapper.cdm import Person # TODO: check dependency location
+from omop_etl_wrapper.cdm.hybrid import Person
+# from omop_etl_wrapper.cdm.cdm531 import Person
+# from omop_etl_wrapper.cdm.cdm600 import Person
 # sample functions, remove if not used
 from ..util import create_person_id_from_subject_id
 from ..util import get_datetime
