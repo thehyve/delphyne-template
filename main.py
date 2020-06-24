@@ -43,22 +43,6 @@ def main(config):
     debug: bool = config['run_options']['debug_mode']
     setup_logging(debug)
 
-    # Test database connection
-    # TODO: keep here or move to wrapper? (useful to check before attempting etl run.. -> discuss change in test branch by Stefan
-    hostname = config['database']['host']
-    port     = config['database']['port']
-    database = config['database']['database_name']
-    username = config['database']['username']
-
-    if 'password' not in config['database']:
-        config['database']['password'] = getpass('Database password:')
-    else:
-        password = config['database']['password']
-
-    uri = f'postgresql://{username}:{password}@{hostname}:{port}/{database}'
-    if not Database.can_connect(uri):
-        return
-
     # Initialize ETL with configuration parameters
     etl = Wrapper(config)
     if config['run_options']['skip_vocabulary_loading']:
