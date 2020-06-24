@@ -16,7 +16,7 @@
 
 from pathlib import Path
 import logging
-from omop_etl_wrapper import Wrapper as BaseWrapper # TODO: check import location
+from omop_etl_wrapper import Wrapper as BaseWrapper
 from src.main.python.transformation import *
 from src.main.python.model.sourcedata import SourceData # TODO: use local version for the moment, will be made general (for data files & database)
 from src.main.python.util import VariableConceptMapper # TODO: add to package?
@@ -31,29 +31,39 @@ class Wrapper(BaseWrapper):
     def __init__(self, config):
         super().__init__(config)
         # Load config settings
-        self.source_folder = Path(config['run_options']['source_data_folder'])
-        self.path_mapping_tables = Path(config['file_paths']['path_mapping_tables'])
-        self.path_custom_vocabularies = Path(config['file_paths']['path_custom_vocabularies'])
-        self.path_sql_transformations = Path(config['file_paths']['path_sql_transformations'])
-        self.skip_vocabulary_loading = False
+        self.source_folder            = Path(config['run_options']['source_data_folder'])
+        self.path_mapping_tables      = Path('./resources/mapping_tables')
+        self.path_custom_vocabularies = Path('./resources/custom_vocabularies')
+        self.path_sql_transformations = Path('./src/main/sql')
+        self.skip_vocabulary_loading  = False
         # Load data to objects
-        self.variable_concept_mapper = VariableConceptMapper(self.path_mapping_tables)
-        self.ontology_concept_mapper = OntologyConceptMapper(self.path_mapping_tables)
-        self.regimen_exposure_mapper = RegimenExposureMapper(self.path_mapping_tables)
-        # TODO: better way of doing this, e.g. systematically add all available from source folder?
+        # self.variable_concept_mapper = VariableConceptMapper(self.path_mapping_tables)
+        # self.ontology_concept_mapper = OntologyConceptMapper(self.path_mapping_tables)
+        # self.regimen_exposure_mapper = RegimenExposureMapper(self.path_mapping_tables)
         # NOTE: replace the following with project-specific source table names!
         self.sample_source_table = None
 
+
+    def transform(self):
+
+        # NOTE: replace the following with project-specific transformations from the python/transformations/ or sql/ folder!
+        # make sure execution follows order of table dependencies (see cdm model)
+        self.execute_transformation(dm_to_person)
+        # self.execute_transformation(sample_source_table_to_person)
+        # self.execute_sql_file(self.path_sql_transformations / 'sample_script.sql')
+
+
     def run(self):
 
-        self.start_timing()
+        # self.start_timing()
 
         logger.info('{:-^100}'.format(' Source Counts '))
-        self.log_tables_rowcounts(self.source_folder)
+        # self.log_tables_rowcounts(self.source_folder)
 
         logger.info('{:-^100}'.format(' Setup '))
 
         # Prepare source
+        self.create_schemas()
         self.drop_cdm()
         self.create_cdm()
 
@@ -62,14 +72,25 @@ class Wrapper(BaseWrapper):
             logger.info('Loading custom concepts')
             self.create_custom_vocabulary()
 
-        # Transformations - make sure execution follows order of table dependencies (see cdm model)
-        logger.info('{:-^100}'.format(' ETL '))
-        # NOTE: replace the following with project-specific transformations from the python/transformations/ or sql/ folder!
-        self.execute_transformation(sample_source_table_to_person)
-        self.execute_sql_file(self.path_sql_transformations / 'sample_script.sql') 
+        # Load stem tables
+        self.truncate_stcm_table()
+        self.load_stcm()
 
-        self.log_summary()
-        self.log_runtime()
+        # Load source data
+
+        logger.info('{:-^100}'.format(' ETL '))
+
+        # These queries are cdm6 specific
+        # self.stem_table_to_domains()
+
+        self.transform()
+
+        self.etl_stats.write_summary_files()
+        self.etl_stats.log_summary()
+
+
+        # self.log_summary()
+        # self.log_runtime()
 
         # TODO: can this be made into a general function, or too project-specific? remove?
         try:
