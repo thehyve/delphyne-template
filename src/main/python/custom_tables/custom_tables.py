@@ -4,11 +4,11 @@ from sqlalchemy.orm import relationship
 from omop_etl_wrapper import Base
 
 
-# TODO: why is {'schema' : 'cdm'} but FK relationships use 'cdm_schema'?
+# TODO: how to overrire {'schema' : 'cdm'} with schema provided by
 
 class Person2(Base):
     __tablename__ = 'person2'
-    __table_args__ = {'schema': 'cdm'}
+    __table_args__ = {'schema': 'cdm600'}
 
     person_id = Column(BigInteger, primary_key=True, unique=True)
     gender_concept_id = Column(ForeignKey('vocabulary_schema.concept.concept_id'), nullable=False)
@@ -33,7 +33,7 @@ class Person2(Base):
 
 class TreatmentLine(Base):
     __tablename__ = 'treatment_line'
-    __table_args__ = {'schema': 'cdm'}
+    __table_args__ = {'schema': 'cdm600'}
 
     treatment_line_id = Column(Integer, primary_key=True)
     person_id = Column(ForeignKey('cdm_schema.person.person_id'), nullable=False, index=True)
