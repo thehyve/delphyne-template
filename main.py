@@ -45,9 +45,6 @@ def main(config):
 
     # Initialize ETL with configuration parameters
     etl = Wrapper(config)
-    # TODO: cleanup this
-    if config['run_options']['skip_vocabulary_loading']:
-        etl.do_skip_vocabulary_loading()
 
     # TODO: ok to log this here? shall we log it next to wrapper version info?
     logger.info('ETL version {}'.format(__version__))

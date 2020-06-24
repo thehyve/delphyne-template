@@ -31,11 +31,11 @@ class Wrapper(BaseWrapper):
     def __init__(self, config):
         super().__init__(config)
         # Load config settings
-        self.source_folder            = Path(config['run_options']['source_data_folder'])
-        self.path_mapping_tables      = Path('./resources/mapping_tables')
+        self.source_folder = Path(config['run_options']['source_data_folder'])
+        self.path_mapping_tables = Path('./resources/mapping_tables')
         self.path_custom_vocabularies = Path('./resources/custom_vocabularies')
         self.path_sql_transformations = Path('./src/main/sql')
-        self.skip_vocabulary_loading  = False
+        self.skip_vocabulary_loading: bool = config['run_options']['skip_vocabulary_loading']
         # Load data to objects
         # self.variable_concept_mapper = VariableConceptMapper(self.path_mapping_tables)
         # self.ontology_concept_mapper = OntologyConceptMapper(self.path_mapping_tables)
@@ -43,15 +43,13 @@ class Wrapper(BaseWrapper):
         # NOTE: replace the following with project-specific source table names!
         self.sample_source_table = None
 
-
     def transform(self):
 
-        # NOTE: replace the following with project-specific transformations from the python/transformations/ or sql/ folder!
+        # NOTE: replace the following with project-specific transformations from python/transformations/ or sql/ folder!
         # make sure execution follows order of table dependencies (see cdm model)
         self.execute_transformation(dm_to_person)
         self.execute_transformation(sample_source_table_to_person)
         # self.execute_sql_file(self.path_sql_transformations / 'sample_script.sql')
-
 
     def run(self):
 
@@ -88,7 +86,6 @@ class Wrapper(BaseWrapper):
         self.etl_stats.write_summary_files()
         self.etl_stats.log_summary()
 
-
         # self.log_summary()
         # self.log_runtime()
 
@@ -106,10 +103,6 @@ class Wrapper(BaseWrapper):
         if not self.sample_source_table:
             self.sample_source_table = SourceData(self.source_folder / 'sample_source_table.csv')
         return self.sample_source_table
-    
-    # TODO: make this a base Wrapper method? since used only once during setup, I would actually make the method
-    def do_skip_vocabulary_loading(self, skip_vocab=True):
-        self.skip_vocabulary_loading = skip_vocab
 
     # TODO: add this to Wrapper methods? note that any custom vocabulary will be available in resources/custom_vocabularies,
     #  so rewriting the details here is completely unnecessary
