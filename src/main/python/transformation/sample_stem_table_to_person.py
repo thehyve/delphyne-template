@@ -6,7 +6,7 @@ from omop_etl_wrapper.cdm.hybrid import Person
 # from omop_etl_wrapper.cdm.cdm531 import Person
 # from omop_etl_wrapper.cdm.cdm600 import Person
 
-from src.main.python.custom_tables.my_tables import Person2
+from src.main.python.custom_tables.custom_tables import Person2
 
 if TYPE_CHECKING:
     from src.main.python.wrapper import Wrapper
