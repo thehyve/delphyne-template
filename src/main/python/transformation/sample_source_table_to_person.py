@@ -29,6 +29,7 @@ import pandas as pd
 if TYPE_CHECKING:
     from src.main.python.wrapper import Wrapper
 
+
 def sample_source_table_to_person(wrapper: Wrapper) -> List[Person]:
 
     source = pd.DataFrame(wrapper.get_sample_source_table())
@@ -49,17 +50,16 @@ def sample_source_table_to_person(wrapper: Wrapper) -> List[Person]:
         r = Person(
             person_id=create_person_id_from_subject_id(row['subject_id']),
             gender_concept_id=row['sex'],
-            year_of_birth=get_datetime(['date_of_birth']).year,
+            year_of_birth=get_datetime(row['date_of_birth']).year,
             race_concept_id=0,
             ethnicity_concept_id=0,
-            care_site_id=row['care_site'],
+            care_site_id=None,
             person_source_value=row['subject_id'],
             gender_source_value=row['sex'],
             gender_source_concept_id=0,
             race_source_concept_id=0,
             ethnicity_source_concept_id=0
         )
-
         records.append(r)
 
     return records
