@@ -4,6 +4,9 @@ Provides a standard repository structure that implements the functionality of th
 
 NOTE: This template has only been tested with PostgreSQL.
 
+## Getting Started
+_TODO_
+
 ## Repository overview
 
 ### `/` root
