@@ -32,11 +32,11 @@ from omop_etl_wrapper.cdm import hybrid as cdm
 logger = logging.getLogger(__name__)
 
 class Wrapper(BaseWrapper):
+    cdm = cdm
 
     def __init__(self, config):
         super().__init__(config)
         # Load config settings
-        self.cdm = cdm
         self.source_folder = Path(config['run_options']['source_data_folder'])
         self.path_mapping_tables = Path('./resources/mapping_tables')
         self.path_custom_vocabularies = Path('./resources/custom_vocabularies')
