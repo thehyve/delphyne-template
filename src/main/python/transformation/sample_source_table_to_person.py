@@ -26,7 +26,7 @@ if TYPE_CHECKING:
     from src.main.python.wrapper import Wrapper
 
 
-def sample_source_table_to_person(wrapper: Wrapper) -> List[wrapper.cdm.Person]:
+def sample_source_table_to_person(wrapper: Wrapper) -> List[Wrapper.cdm.Person]:
 
     source = pd.DataFrame(wrapper.get_sample_source_table())
 
