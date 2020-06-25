@@ -12,9 +12,9 @@ if TYPE_CHECKING:
     from src.main.python.wrapper import Wrapper
 
 
-def dm_to_person(wrapper: Wrapper) -> List[Person]:
+def dm_to_person(wrapper: Wrapper) -> List[wrapper.cdm.Person]:
     records = []
-    p = Person(gender_concept_id=2,
+    p = wrapper.cdm.Person(gender_concept_id=2,
                year_of_birth=1940,
                race_concept_id=0,
                ethnicity_concept_id=0,
