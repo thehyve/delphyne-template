@@ -59,14 +59,6 @@ with events as (
     UNION
 
     SELECT
-        'TreatmentLine' AS domain_name, person_id, drug_era_start_date AS start_date, drug_era_end_date AS end_date,
-        drug_concept_id AS concept_id, NULL as type_concept_id, NULL AS source_value,
-        NULL as visit_occurence_id
-    FROM treatment_line
-
-    UNION
-
-    SELECT
         'Death' AS domain_name, person_id, death_date AS start_date, NULL AS end_date,
         cause_concept_id AS concept_id, death_type_concept_id as type_concept_id, cause_source_value AS source_value,
         NULL as visit_occurrence_id
