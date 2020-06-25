@@ -23,10 +23,16 @@ from src.main.python.util import VariableConceptMapper # TODO: add to package?
 from src.main.python.util import OntologyConceptMapper # TODO: add to package?
 from src.main.python.util import RegimenExposureMapper # TODO: add to package?
 
+# NOTE: select the desired target CDM version below
+from omop_etl_wrapper.cdm import hybrid as cdm
+# from omop_etl_wrapper.cdm import cdm531 as cdm
+# from omop_etl_wrapper.cdm import cdm600 as cdm
+
 
 logger = logging.getLogger(__name__)
 
 class Wrapper(BaseWrapper):
+    cdm = cdm
 
     def __init__(self, config):
         super().__init__(config)

@@ -16,10 +16,6 @@ from __future__ import annotations
 
 from typing import List, TYPE_CHECKING
 
-from omop_etl_wrapper.cdm.hybrid import Person
-# from omop_etl_wrapper.cdm.cdm531 import Person
-# from omop_etl_wrapper.cdm.cdm600 import Person
-
 # sample functions, remove if not used
 from ..util import create_person_id_from_subject_id
 from ..util import get_datetime
@@ -30,7 +26,7 @@ if TYPE_CHECKING:
     from src.main.python.wrapper import Wrapper
 
 
-def sample_source_table_to_person(wrapper: Wrapper) -> List[Person]:
+def sample_source_table_to_person(wrapper: Wrapper) -> List[Wrapper.cdm.Person]:
 
     source = pd.DataFrame(wrapper.get_sample_source_table())
 
@@ -47,7 +43,7 @@ def sample_source_table_to_person(wrapper: Wrapper) -> List[Person]:
 
     records = []
     for _, row in source.iterrows():
-        r = Person(
+        r = wrapper.cdm.Person(
             person_id=create_person_id_from_subject_id(row['subject_id']),
             gender_concept_id=row['sex'],
             year_of_birth=get_datetime(row['date_of_birth']).year,
