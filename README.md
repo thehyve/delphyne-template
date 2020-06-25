@@ -2,7 +2,7 @@
 An ETL template for future OHDSI projects.
 Provides a standard repository structure that implements the functionality of the [omop-etl-wrapper](https://github.com/thehyve/omop-etl-wrapper) Python package.
 
-NOTE: This template currently supports PostgreSQL only.
+NOTE: This template has only been tested with PostgreSQL.
 
 ## Repository overview
 
@@ -61,5 +61,4 @@ Other tests, e.g. Python unit tests, can also be placed in a new `/src/test/pyth
 ## Planned developments
  - A future template release will replace the R framework with Python-based unit tests for better integration with GitHub workflows.
  - ...
-
 
