@@ -9,7 +9,7 @@ _TODO_
 
 ## Repository overview
 
-### `/` root
+### `/root`
 - `main.py` triggers the ETL execution. Requires minimal customization of e.g. default connection arguments and pipeline version info.
 - `README-sample.md` provides a basic README file for the project, including instructions on how to run the ETL.
   Use it to **replace this readme** after completing the initial ETL setup.
