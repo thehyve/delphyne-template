@@ -36,8 +36,6 @@ def main(config):
 
     # Load configuration
     config = read_yaml_file(Path(config))
-    if 'password' not in config['database']:
-        config['database']['password'] = getpass('Database password:')
 
     # Setup logging
     debug: bool = config['run_options']['debug_mode']
