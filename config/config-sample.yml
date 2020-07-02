@@ -29,11 +29,6 @@ run_options:
   skip_custom_vocabulary_loading: False
   # STCM files (not implemented yet)
   skip_source_to_concept_map_loading: False
-  # Insert ORM objects using SQLAlchemy's bulk_save_objects. This
-  # will improve the performance of saving ORM objects. The downside is
-  # that neither updated, nor new objects added via relationships will
-  # be captured in the processing statistics.
-  bulk_mode: False
   # Write two additional tsv files in the logs folder, with more
   # detailed information on source data counts and ETL transformations.
   write_reports: False
