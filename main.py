@@ -47,7 +47,6 @@ def main(config):
     # TODO: ok to log this here? shall we log it next to wrapper version info?
     logger.info('ETL version {}'.format(__version__))
 
-    # TODO: any situation where we want to use the following? if so, make sure it is part of wrapper code
     # if etl.is_git_repo():
     #     logger.info('Git HEAD at ' + etl.get_git_tag_or_branch())
 
@@ -56,5 +55,3 @@ def main(config):
 
 if __name__ == "__main__":
     sys.exit(main())
-    # TODO: some projects use main(auto_envvar_prefix='ETL'), even if it's not a click parameter;
-    #  understand use and either document or remove
