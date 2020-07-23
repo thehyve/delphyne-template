@@ -95,14 +95,6 @@ class Wrapper(BaseWrapper):
         # self.log_summary()
         # self.log_runtime()
 
-        # TODO: can this be made into a general function, or too project-specific? remove?
-        try:
-            self.execute_sql_query('GRANT INSERT, SELECT, UPDATE, DELETE, REFERENCES, TRIGGER ON ALL TABLES IN SCHEMA omopcdm TO ohdsi_app;', verbose=False)
-            self.execute_sql_query('GRANT ALL ON ALL TABLES IN SCHEMA omopcdm TO ohdsi_admin;', verbose=False)
-            logger.info("Permissions granted to HONEUR admin and app roles")
-        except:
-            logger.error("Failed to grant permissions to HONEUR admin and app roles")
-
     # TODO: change the following to load these programmatically from a source data folder?
     # NOTE: replace the following with project-specific source tables and function names!
     def get_sample_source_table(self):
