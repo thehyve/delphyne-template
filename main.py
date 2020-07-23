@@ -46,9 +46,6 @@ def main(config):
     # TODO: ok to log this here? shall we log it next to wrapper version info?
     logger.info('ETL version {}'.format(__version__))
 
-    # if etl.is_git_repo():
-    #     logger.info('Git HEAD at ' + etl.get_git_tag_or_branch())
-
     # Run ETL
     etl.run()
 
