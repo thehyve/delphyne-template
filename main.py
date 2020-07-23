@@ -17,7 +17,6 @@
 import logging
 import sys
 import click
-from getpass import getpass
 from pathlib import Path
 from omop_etl_wrapper.util.io import read_yaml_file
 from omop_etl_wrapper.log.setup_logging import setup_logging
