@@ -107,18 +107,18 @@ class Wrapper(BaseWrapper):
     def create_custom_vocabulary(self):
         session = self.db.get_new_session()
 
-        if not session.query(Vocabulary).get('Honeur'): # TODO: get this from XXX_vocabulary.tsv
+        if not session.query(Vocabulary).get('VOCAB'): # TODO: get this from XXX_vocabulary.tsv
             session.add(
                 Vocabulary(
-                    vocabulary_id='Honeur',
+                    vocabulary_id='CUSTOM_VOCAB',
                     vocabulary_concept_id=0,  # We could make separate concept and link it
-                    vocabulary_name='HONEUR',
-                    vocabulary_reference='HONEUR',
-                    vocabulary_version='APRIL 2019'
+                    vocabulary_name='CUSTOM_VOCAB',
+                    vocabulary_reference='CUSTOM_VOCAB',
+                    vocabulary_version='vX.Y.Z'
                 )
             )
 
-        for concept_class_id in ['Combination Therapy', 'Honeur Class']: # TODO: get this from XXX_concept_class.tsv
+        for concept_class_id in ['Combination Therapy', 'Custom Class']: # TODO: get this from XXX_concept_class.tsv
             if not session.query(ConceptClass).get(concept_class_id):
                 session.add(
                     ConceptClass(
