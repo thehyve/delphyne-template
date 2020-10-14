@@ -2,7 +2,7 @@
 # if the transformations require reading source data from files.
 
 # Folder containing all source data files
-source_data_folder: './resources/source_data'
+source_data_folder: './resources/synthetic_data'
 # For each source file, count the number of rows
 count_source_rows: False
 
@@ -20,7 +20,7 @@ file_defaults:
 # pandas dtypes can be provided on column level, if you want to
 # apply these when loading a file as a DataFrame.
 source_files:
-  'source_file1.csv':
+  'sample_source_table.csv':
     delimiter: ','
   'source_file2.tsv':
     dtypes:
