@@ -20,8 +20,6 @@ run_options:
   # table definitions. Choose from "cdm531", "cdm600" or "hybrid".
   # (not implemented yet) E.g.
   cdm: 'hybrid'
-  # explain param (not implemented yet)
-  source_data_folder: './resources/source_data'
   # add option for loading the regular OMOP vocabularies? (not implemented yet)
   # ask for confirmation?
   skip_vocabulary_loading: True
