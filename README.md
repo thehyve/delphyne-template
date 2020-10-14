@@ -19,6 +19,7 @@ _TODO_
 ### `/config`
 ETL configuration folder, contains:
 - `config-sample.yml`, the general pipeline configuration options. Copy and rename this file to create as many configurations as needed for different pipeline execution scenarios. 
+- `source_config-sample.yml`, the configuration for source data files. Copy and rename this file to `source_config.yml` to specify the file properties.
 - `logging-sample.yml`, the logging configuration. Copy and rename this file to `logging.yml` to customize the logging behavior (this is the only file name that will be recognized by the ETL).
 
 
