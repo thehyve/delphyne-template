@@ -19,6 +19,8 @@ file_defaults:
 # adding it here below is optional.
 # pandas dtypes can be provided on column level, if you want to
 # apply these when loading a file as a DataFrame.
+# For a full list of available dtypes see the "String Aliases" here:
+# https://pandas.pydata.org/pandas-docs/stable/user_guide/basics.html#dtypes
 source_files:
   'sample_source_table.csv':
     delimiter: ','
