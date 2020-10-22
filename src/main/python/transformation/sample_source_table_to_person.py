@@ -34,7 +34,7 @@ def sample_source_table_to_person(wrapper: Wrapper) -> List[Wrapper.cdm.Person]:
     # - joins between multiple source tables
     # alternatively, you could use the dictionary returned by the wrapper method directly:
 
-    rows = source.get_csv_as_list_of_dicts()  # Dictionary { row : { variable : value } }
+    # rows = source.get_csv_as_list_of_dicts()  # Dictionary { row : { variable : value } }
     # for row in rows:
     #     for variable, value in row.items():
     #         r = ...
