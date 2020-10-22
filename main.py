@@ -15,17 +15,20 @@
 # !/usr/bin/env python3
 
 import logging
-import sys
-import click
 from pathlib import Path
-from omop_etl_wrapper.util.io import read_yaml_file
-from omop_etl_wrapper.log.setup_logging import setup_logging
-from src.main.python.wrapper import Wrapper
 
+import click
+import sys
+from omop_etl_wrapper.log.setup_logging import setup_logging
+from omop_etl_wrapper.util.io import read_yaml_file
+
+from src.main.python.cdm import Base
+from src.main.python.wrapper import Wrapper
 
 __version__ = '0.1.0'
 
 logger = logging.getLogger(__name__)
+
 
 @click.command()
 @click.option('--config', '-c', required=True, metavar='<config_file_path>',
@@ -41,13 +44,14 @@ def main(config):
     setup_logging(debug)
 
     # Initialize ETL with configuration parameters
-    etl = Wrapper(config)
+    etl = Wrapper(config, Base)
 
     # TODO: ok to log this here? shall we log it next to wrapper version info?
     logger.info('ETL version {}'.format(__version__))
 
     # Run ETL
     etl.run()
+
 
 if __name__ == "__main__":
     sys.exit(main())

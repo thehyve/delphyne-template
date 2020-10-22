@@ -12,8 +12,6 @@
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
 
-# !/usr/bin/env python3
-
 from pathlib import Path
 import logging
 from omop_etl_wrapper import Wrapper as BaseWrapper
@@ -23,9 +21,8 @@ from src.main.python.util import OntologyConceptMapper # TODO: add to package?
 from src.main.python.util import RegimenExposureMapper # TODO: add to package?
 
 # NOTE: select the desired target CDM version below
-from omop_etl_wrapper.cdm import hybrid as cdm
-# from omop_etl_wrapper.cdm import cdm531 as cdm
-# from omop_etl_wrapper.cdm import cdm600 as cdm
+# from .cdm import cdm531 as cdm
+from .cdm import cdm600 as cdm
 
 
 logger = logging.getLogger(__name__)
@@ -34,8 +31,8 @@ logger = logging.getLogger(__name__)
 class Wrapper(BaseWrapper):
     cdm = cdm
 
-    def __init__(self, config):
-        super().__init__(config)
+    def __init__(self, config, Base):
+        super().__init__(config, Base)
         # Load config settings
         self.path_mapping_tables = Path('./resources/mapping_tables')
         self.path_custom_vocabularies = Path('./resources/custom_vocabularies')
@@ -72,11 +69,11 @@ class Wrapper(BaseWrapper):
         # Load custom concepts
         if not self.skip_vocabulary_loading:
             logger.info('Loading custom concepts')
-            self.create_custom_vocabulary()
+            # self.create_custom_vocabulary()
 
         # Load source to concept mappings
-        self.truncate_stcm_table()
-        self.load_stcm()
+        # self.truncate_stcm_table()
+        # self.load_stcm()
 
         # Load source data
 
@@ -87,7 +84,7 @@ class Wrapper(BaseWrapper):
 
         self.transform()
 
-        self.etl_stats.write_summary_files()
+        # self.etl_stats.write_summary_files()
         self.etl_stats.log_summary()
 
         # self.log_summary()
