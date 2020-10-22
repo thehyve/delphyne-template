@@ -210,32 +210,3 @@ class Vocabulary(BaseVocabulary, Base_cdm_600):
 
 class Domain(BaseDomain, Base_cdm_600):
     pass
-
-
-from sqlalchemy import (BigInteger, Column, Date, DateTime, ForeignKey,
-                        Integer, String)
-
-
-class Person2(Base_cdm_600):
-    __tablename__ = 'person2'
-    __table_args__ = {'schema': 'cdm_schema'}
-
-    person_id = Column(BigInteger, primary_key=True, unique=True)
-    gender_concept_id = Column(ForeignKey('vocabulary_schema.concept.concept_id'), nullable=False)
-    year_of_birth = Column(Integer, nullable=False)
-    month_of_birth = Column(Integer)
-    day_of_birth = Column(Integer)
-    birth_datetime = Column(DateTime)
-    death_datetime = Column(DateTime)
-    race_concept_id = Column(ForeignKey('vocabulary_schema.concept.concept_id'), nullable=False)
-    ethnicity_concept_id = Column(ForeignKey('vocabulary_schema.concept.concept_id'), nullable=False)
-    location_id = Column(ForeignKey('cdm_schema.location.location_id'))
-    provider_id = Column(ForeignKey('cdm_schema.provider.provider_id'))
-    care_site_id = Column(ForeignKey('cdm_schema.care_site.care_site_id'))
-    person_source_value = Column(String(50))
-    gender_source_value = Column(String(50))
-    gender_source_concept_id = Column(ForeignKey('vocabulary_schema.concept.concept_id'), nullable=False)
-    race_source_value = Column(String(50))
-    race_source_concept_id = Column(ForeignKey('vocabulary_schema.concept.concept_id'), nullable=False)
-    ethnicity_source_value = Column(String(50))
-    ethnicity_source_concept_id = Column(ForeignKey('vocabulary_schema.concept.concept_id'), nullable=False)
