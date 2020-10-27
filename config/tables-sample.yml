@@ -1,0 +1,11 @@
+standard_tables: # can be one of cdm600, cdm531, custom, empty
+  person: cdm600
+  fact_relationship: custom
+  stem_table:
+  death: cdm531
+  location: cdm600
+  provider: cdm600
+  care_site: cdm600
+
+custom_tables: # we could implement a way to leave out custom tables if not explicitly mentioned here
+  MyTable

@@ -2,4 +2,5 @@
 !.gitignore
 !config-sample.yml
 !source_config-sample.yml
+!tables-sample.yml
 !logging-sample.yml
