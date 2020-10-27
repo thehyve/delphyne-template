@@ -1,4 +1,5 @@
 ### Custom files (project-specific) ###
+
 # R test framework
 src/test/R/config.yml
 src/test/R/test_intermediates/source_data/
@@ -8,6 +9,13 @@ src/test/R/unittest_results.csv
 src/test/R/.Rhistory
 src/test/R/.RData
 src/test/R/errorReport.txt
+
+
+# custom tables
+src/main/python/cdm/custom_tables/custom_cdm/*
+!src/main/python/cdm/custom_tables/custom_cdm/.gitkeep
+src/main/python/cdm/custom_tables/custom_other/*
+!src/main/python/cdm/custom_tables/custom_other/.gitkeep
 
 # logs
 /logs/
