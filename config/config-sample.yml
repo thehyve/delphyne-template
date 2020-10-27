@@ -26,8 +26,6 @@ run_options:
   # Write two additional tsv files in the logs folder, with more
   # detailed information on source data counts and ETL transformations.
   write_reports: False
-  # Generate more extensive logging output
-  debug_mode: False
 
 # sql_parameters are optional. They can be used together with parameterized
 # raw SQL queries, of which the placeholders (e.g. schema names, values)
