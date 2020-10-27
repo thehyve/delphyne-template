@@ -4,7 +4,7 @@ database:
   port: 5432
   database_name: 'ohdsi'
   username: 'postgres'
-  # Comment out password to provide at runtime
+  # password can be left empty to provide at runtime
   password: 'postgres'
 
 # The schema names of the OMOP CDM (target schema) and the vocabulary
