@@ -22,7 +22,6 @@ import sys
 from omop_etl_wrapper.log.setup_logging import setup_logging
 from omop_etl_wrapper.util.io import read_yaml_file
 
-from src.main.python.cdm import Base
 from src.main.python.wrapper import Wrapper
 
 __version__ = '0.1.0'
@@ -43,8 +42,12 @@ def main(config):
     debug: bool = config['run_options']['debug_mode']
     setup_logging(debug)
 
+    cdm_tables = read_yaml_file(Path('config/tables-sample.yml')) # TODO: replace with fixed path
+    # LoadCdmTables(table_config= cdm_tables['standard_tables'])
+    # TODO: add a similar class to load custom tables
+
     # Initialize ETL with configuration parameters
-    etl = Wrapper(config, Base)
+    etl = Wrapper(config)
 
     # TODO: ok to log this here? shall we log it next to wrapper version info?
     logger.info('ETL version {}'.format(__version__))

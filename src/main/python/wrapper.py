@@ -20,9 +20,7 @@ from src.main.python.util import VariableConceptMapper # TODO: add to package?
 from src.main.python.util import OntologyConceptMapper # TODO: add to package?
 from src.main.python.util import RegimenExposureMapper # TODO: add to package?
 
-# NOTE: select the desired target CDM version below
-# from .cdm import cdm531 as cdm
-from .cdm import cdm600 as cdm
+from .cdm import cdm_tables as cdm
 
 
 logger = logging.getLogger(__name__)
@@ -31,8 +29,8 @@ logger = logging.getLogger(__name__)
 class Wrapper(BaseWrapper):
     cdm = cdm
 
-    def __init__(self, config, Base):
-        super().__init__(config, Base)
+    def __init__(self, config):
+        super().__init__(config, cdm.Base)
         # Load config settings
         self.path_mapping_tables = Path('./resources/mapping_tables')
         self.path_custom_vocabularies = Path('./resources/custom_vocabularies')
