@@ -19,6 +19,7 @@ from pathlib import Path
 
 import click
 import sys
+from omop_etl_wrapper.config.models import MainConfig
 from omop_etl_wrapper.log.setup_logging import setup_logging
 from omop_etl_wrapper.util.io import read_yaml_file
 
@@ -35,13 +36,11 @@ logger = logging.getLogger(__name__)
               help='Path to the yaml configuration file.',
               type=click.Path(file_okay=True, exists=True, readable=True))
 def main(config):
+    # Setup logging
+    setup_logging()
 
     # Load configuration
-    config = read_yaml_file(Path(config))
-
-    # Setup logging
-    debug: bool = config['run_options']['debug_mode']
-    setup_logging(debug)
+    config = MainConfig(**read_yaml_file(Path(config)))
 
     # Initialize ETL with configuration parameters
     etl = Wrapper(config, Base)
