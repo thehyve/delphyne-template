@@ -1,5 +1,5 @@
 standard_tables: # can be one of cdm600, cdm531, custom, empty
-  person: cdm600
+  person: cdm531
   fact_relationship: custom
   stem_table:
   death: cdm531
