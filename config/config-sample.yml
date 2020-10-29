@@ -16,10 +16,6 @@ schema_translate_map:
   vocabulary_schema: 'vocab'
 
 run_options:
-  # A module from omop-etl-wrapper.cdm, which contains the OMOP ORM
-  # table definitions. Choose from "cdm531", "cdm600" or "hybrid".
-  # (not implemented yet) E.g.
-  cdm: 'hybrid'
   # add option for loading the regular OMOP vocabularies? (not implemented yet)
   # ask for confirmation?
   skip_vocabulary_loading: True
