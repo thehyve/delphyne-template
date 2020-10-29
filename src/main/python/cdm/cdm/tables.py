@@ -21,8 +21,21 @@ from omop_etl_wrapper.cdm.vocabularies import *
 
 from omop_etl_wrapper.cdm.cdm_extensions.oncology import *
 
+from src.main.python.cdm import custom
 
 Base = declarative_base()
+
+
+########################################################################
+#                            CUSTOM TABLES                             #
+########################################################################
+
+# class Person(custom.CustomPerson, Base):
+#     pass
+#
+#
+# class TreatmentLine(custom.BaseTreatmentLine, Base):
+#     pass
 
 
 ########################################################################
@@ -273,7 +286,7 @@ class DrugStrength(BaseDrugStrength, Base):
 #     pass
 #
 #
-# Make sure to remove the regular Measurement class under CLINICAL DATA
-# if using this extension
+# # Make sure to remove the regular Measurement class under CLINICAL DATA
+# # if using this extension
 # class Measurement(BaseMeasurementOncExt, Base):
 #     pass
