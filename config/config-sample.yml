@@ -4,7 +4,7 @@ database:
   port: 5432
   database_name: 'ohdsi'
   username: 'postgres'
-  # Comment out password to provide at runtime
+  # password can be left empty to provide at runtime
   password: 'postgres'
 
 # The schema names of the OMOP CDM (target schema) and the vocabulary
@@ -26,8 +26,6 @@ run_options:
   # Write two additional tsv files in the logs folder, with more
   # detailed information on source data counts and ETL transformations.
   write_reports: False
-  # Generate more extensive logging output
-  debug_mode: False
 
 # sql_parameters are optional. They can be used together with parameterized
 # raw SQL queries, of which the placeholders (e.g. schema names, values)

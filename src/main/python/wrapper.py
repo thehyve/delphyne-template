@@ -12,14 +12,18 @@
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
 
-from pathlib import Path
 import logging
+from pathlib import Path
+
 from omop_etl_wrapper import Wrapper as BaseWrapper
+from omop_etl_wrapper.config.models import MainConfig
+
 from src.main.python.transformation import *
 from src.main.python.util import VariableConceptMapper # TODO: add to package?
 from src.main.python.util import OntologyConceptMapper # TODO: add to package?
 from src.main.python.util import RegimenExposureMapper # TODO: add to package?
 from src.main.python import cdm
+
 
 logger = logging.getLogger(__name__)
 
@@ -27,13 +31,13 @@ logger = logging.getLogger(__name__)
 class Wrapper(BaseWrapper):
     cdm = cdm
 
-    def __init__(self, config):
+    def __init__(self, config: MainConfig):
         super().__init__(config, cdm.Base)
         # Load config settings
         self.path_mapping_tables = Path('./resources/mapping_tables')
         self.path_custom_vocabularies = Path('./resources/custom_vocabularies')
         self.path_sql_transformations = Path('./src/main/sql')
-        self.skip_vocabulary_loading: bool = config['run_options']['skip_vocabulary_loading']
+        self.skip_vocabulary_loading: bool = config.run_options.skip_vocabulary_loading
         # Load data to objects
         # self.variable_concept_mapper = VariableConceptMapper(self.path_mapping_tables)
         # self.ontology_concept_mapper = OntologyConceptMapper(self.path_mapping_tables)
