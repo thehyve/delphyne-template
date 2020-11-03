@@ -16,6 +16,7 @@
 
 from pathlib import Path
 import logging
+import pandas as pd
 from omop_etl_wrapper import Wrapper as BaseWrapper
 from src.main.python.transformation import *
 from src.main.python.model.sourcedata import SourceData # TODO: use local version for the moment, will be made general (for data files & database)
@@ -27,6 +28,7 @@ from src.main.python.util import RegimenExposureMapper # TODO: add to package?
 from omop_etl_wrapper.cdm import hybrid as cdm
 # from omop_etl_wrapper.cdm import cdm531 as cdm
 # from omop_etl_wrapper.cdm import cdm600 as cdm
+from omop_etl_wrapper.cdm import vocabularies as vocab
 
 
 logger = logging.getLogger(__name__)
@@ -73,8 +75,8 @@ class Wrapper(BaseWrapper):
 
         # Load custom concepts
         if not self.skip_vocabulary_loading:
-            logger.info('Loading custom concepts')
-            self.create_custom_vocabulary()
+            logger.info('Loading custom vocabularies')
+            self.load_custom_vocabulary_tables()
 
         # Load source to concept mappings
         self.truncate_stcm_table()
@@ -102,32 +104,139 @@ class Wrapper(BaseWrapper):
             self.sample_source_table = SourceData(self.source_folder / 'sample_source_table.csv')
         return self.sample_source_table
 
-    # TODO: add this to Wrapper methods? note that any custom vocabulary will be available in resources/custom_vocabularies,
-    #  so rewriting the details here is completely unnecessary
-    def create_custom_vocabulary(self):
-        session = self.db.get_new_session()
+    def load_custom_vocabulary_tables(self):
 
-        if not session.query(Vocabulary).get('VOCAB'): # TODO: get this from XXX_vocabulary.tsv
-            session.add(
-                Vocabulary(
-                    vocabulary_id='CUSTOM_VOCAB',
-                    vocabulary_concept_id=0,  # We could make separate concept and link it
-                    vocabulary_name='CUSTOM_VOCAB',
-                    vocabulary_reference='CUSTOM_VOCAB',
-                    vocabulary_version='vX.Y.Z'
-                )
-            )
+        # patterns
+        VOCAB_FILE_PATTERN = '*_vocabulary.tsv'
+        CLASS_FILE_PATTERN = '*_concept_class.tsv'
+        CONCEPT_FILE_PATTERN = '*_concept.tsv'
 
-        for concept_class_id in ['Combination Therapy', 'Custom Class']: # TODO: get this from XXX_concept_class.tsv
-            if not session.query(ConceptClass).get(concept_class_id):
-                session.add(
-                    ConceptClass(
-                        concept_class_id=concept_class_id,
-                        concept_class_concept_id=0,  # We could make separate concept and link it
-                        concept_class_name=concept_class_id
-                    )
-                )
+        # TODO: quality checks: mandatory fields, dependencies
+        # self.check_custom_vocabularies_format()
 
-        session.commit()
-        session.close()
-        self.load_concept_from_csv(self.path_custom_vocabularies)
+        custom_vocabularies = self.get_custom_vocabulary_names(VOCAB_FILE_PATTERN)
+        custom_classes = self.get_custom_class_names(CLASS_FILE_PATTERN)
+
+        # drop older versions
+        self.drop_custom_concepts(custom_vocabularies)
+        self.drop_custom_vocabularies(custom_vocabularies)
+        self.drop_custom_classes(custom_classes)
+        # load new versions
+        self.load_custom_classes(custom_classes)
+        self.load_custom_vocabularies(custom_vocabularies)
+        self.load_custom_concepts(custom_vocabularies)
+        # TODO: remove obsolete versions (i.e. cleanup in case of renaming of vocabs/classes);
+        #  if the name has been changed, the previous drop won't find them
+        # self.drop_unused_custom_concepts()
+        # self.drop_unused_custom_vocabularies()
+        # self.drop_unused_custom_classes()
+
+    def get_custom_vocabulary_names(self, file_pattern):
+
+        vocabularies = {}
+
+        for vocab_file in self.path_custom_vocabularies.glob(file_pattern):
+
+            df = pd.read_csv(vocab_file, sep='\t')
+            for _,row in df.iterrows():
+                vocab_id = df['vocabulary_id']
+                vocab_version =  df['vocabulary_version']
+
+                if self.check_if_existing_vocab_version(vocab_id, vocab_version):
+                    continue
+
+                vocabularies[vocab_id] = vocab_file.name
+
+        return vocabularies
+
+    def check_if_existing_vocab_version(self, vocab_id, vocab_version):
+
+        with self.db.session_scope() as session:
+            existing_record = \
+                session.query(vocab.BaseVocabulary) \
+                .filter(vocab.BaseVocabulary.vocabulary_id == vocab_id) \
+                .filter(vocab.BaseVocabulary.vocabulary_version == vocab_version) \
+                .one_or_none()
+            return False if not existing_record else True
+
+    def get_custom_class_names(self, file_pattern):
+
+        classes = {}
+
+        for class_file in self.path_custom_vocabularies.glob(file_pattern):
+            df = pd.read_csv(class_file, sep='\t')
+            for _, row in df.iterrows():
+                class_id = df['concept_class_id']
+                class_name = df['concept_class_name']
+                class_concept_id = df['concept_class_concept_id']
+
+                if self.check_if_existing_custom_class(class_id, class_name, class_concept_id):
+                    continue
+
+                classes[class_id] = class_file.name
+
+        return classes
+
+    def check_if_existing_custom_class(self, class_id, class_name, class_concept_id):
+
+        with self.db.session_scope() as session:
+            existing_record = \
+                session.query(vocab.BaseConceptClass) \
+                .filter(vocab.BaseConceptClass.concept_class_id == class_id) \
+                .filter(vocab.BaseConceptClass.concept_class_name == class_name) \
+                .filter(vocab.BaseConceptClass.concept_class_concept_id == class_concept_id) \
+                .one_or_none()
+            return False if not existing_record else True
+
+    def drop_custom_concepts(self, custom_vocabularies):
+        pass
+
+    def drop_custom_vocabularies(self, custom_vocabularies):
+        pass
+
+    def drop_custom_classes(self, custom_vocabularies):
+        pass
+
+    def load_custom_classes(self, custom_vocabularies):
+        pass
+
+        # for concept_class_id in class_list:
+        #     session.add(
+        #         ConceptClass(
+        #             concept_class_id=concept_class_id,
+        #             concept_class_concept_id=0,  # We could make separate concept and link it
+        #             concept_class_name=concept_class_id
+        #         )
+        #     )
+
+    def load_custom_vocabularies(self, custom_vocabularies):
+        pass
+
+        # TODO: what's the difference?
+        # conn = self.db.engine.connect()
+        # session = self.db.get_new_session()
+        #
+        # session.add(
+        #     cdm.Vocabulary(
+        #         vocabulary_id='CUSTOM_VOCAB',
+        #         vocabulary_concept_id=0,  # We could make separate concept and link it
+        #         vocabulary_name='CUSTOM_VOCAB',
+        #         vocabulary_reference='CUSTOM_VOCAB',
+        #         vocabulary_version='vX.Y.Z'
+        #     )
+        # )
+        # session.commit()
+        # session.close()
+
+    def load_custom_concepts(self, custom_vocabularies):
+        pass
+
+    def drop_unused_custom_concepts(self):
+        pass
+
+    def drop_unused_custom_vocabularies(self):
+        pass
+
+    def drop_unused_custom_classes(self):
+        pass
+
