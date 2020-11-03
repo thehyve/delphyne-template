@@ -126,10 +126,15 @@ class Wrapper(BaseWrapper):
         self.load_custom_vocabularies(vocab_ids, vocab_files)
         self.load_custom_concepts(vocab_ids, CONCEPT_FILE_PATTERN)
         # TODO: remove obsolete versions (i.e. cleanup in case of renaming of vocabs/classes);
-        #  if the name has been changed, the previous drop won't find them
-        # self.drop_unused_custom_concepts()
-        # self.drop_unused_custom_vocabularies()
-        # self.drop_unused_custom_classes()
+        #  if the name has been changed, the previous drop won't find them;
+        #  NOTE: for this to work, you need to keep a list of valid Athena vocabulary ids
+        #  and check that no unknown vocabulary is present (not in Athena or custom vocab files);
+        #  the cleanup could be rather time-consuming and should not be executed every time
+        valid_vocabs = self.get_list_of_valid_vocabularies()
+        self.drop_unused_custom_concepts(valid_vocabs)
+        self.drop_unused_custom_vocabularies(valid_vocabs)
+        valid_classes = self.get_list_of_valid_classes()
+        self.drop_unused_custom_classes(valid_classes)
 
     def get_custom_vocabulary_ids_and_files(self, file_pattern):
 
@@ -282,12 +287,18 @@ class Wrapper(BaseWrapper):
                         ))
                     session.add_all(records)
 
-    def drop_unused_custom_concepts(self):
+    def get_list_of_valid_vocabularies(self):
         pass
 
-    def drop_unused_custom_vocabularies(self):
+    def get_list_of_valid_classes(self):
         pass
 
-    def drop_unused_custom_classes(self):
+    def drop_unused_custom_concepts(self, vocab_ids):
+        pass
+
+    def drop_unused_custom_vocabularies(self, vocab_ids):
+        pass
+
+    def drop_unused_custom_classes(self, class_ids):
         pass
 
