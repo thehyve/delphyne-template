@@ -189,13 +189,34 @@ class Wrapper(BaseWrapper):
             return False if not existing_record else True
 
     def drop_custom_concepts(self, custom_vocabularies):
-        pass
+
+        if custom_vocabularies:
+            vocabs_to_drop = [custom_vocabularies.keys()]
+
+            with self.db.session_scope() as session:
+                session.query(vocab.BaseConcept) \
+                    .filter(vocab.BaseConcept.vocabulary_id._in(vocabs_to_drop)) \
+                    .delete()
 
     def drop_custom_vocabularies(self, custom_vocabularies):
-        pass
 
-    def drop_custom_classes(self, custom_vocabularies):
-        pass
+        if custom_vocabularies:
+            vocabs_to_drop = [custom_vocabularies.keys()]
+
+            with self.db.session_scope() as session:
+                session.query(vocab.BaseVocabulary) \
+                    .filter(vocab.BaseVocabulary.vocabulary_id._in(vocabs_to_drop)) \
+                    .delete()
+
+    def drop_custom_classes(self, custom_classes):
+
+        if custom_classes:
+            classes_to_drop = [custom_classes.keys()]
+
+            with self.db.session_scope() as session:
+                session.query(vocab.BaseConceptClass) \
+                    .filter(vocab.BaseConceptClass.concept_class_id._in(classes_to_drop)) \
+                    .delete()
 
     def load_custom_classes(self, custom_vocabularies):
         pass
