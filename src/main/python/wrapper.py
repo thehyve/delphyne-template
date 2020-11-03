@@ -28,10 +28,10 @@ from src.main.python.util import RegimenExposureMapper # TODO: add to package?
 from omop_etl_wrapper.cdm import hybrid as cdm
 # from omop_etl_wrapper.cdm import cdm531 as cdm
 # from omop_etl_wrapper.cdm import cdm600 as cdm
-from omop_etl_wrapper.cdm import vocabularies as vocab
 
 
 logger = logging.getLogger(__name__)
+
 
 class Wrapper(BaseWrapper):
     cdm = cdm
@@ -114,26 +114,27 @@ class Wrapper(BaseWrapper):
         # TODO: quality checks: mandatory fields, dependencies
         # self.check_custom_vocabularies_format()
 
-        custom_vocabularies = self.get_custom_vocabulary_names(VOCAB_FILE_PATTERN)
-        custom_classes = self.get_custom_class_names(CLASS_FILE_PATTERN)
+        vocab_ids, vocab_files = self.get_custom_vocabulary_ids_and_files(VOCAB_FILE_PATTERN)
+        class_ids, class_files = self.get_custom_class_ids_and_files(CLASS_FILE_PATTERN)
 
         # drop older versions
-        self.drop_custom_concepts(custom_vocabularies)
-        self.drop_custom_vocabularies(custom_vocabularies)
-        self.drop_custom_classes(custom_classes)
+        self.drop_custom_concepts(vocab_ids)
+        self.drop_custom_vocabularies(vocab_ids)
+        self.drop_custom_classes(class_ids)
         # load new versions
-        self.load_custom_classes(custom_classes)
-        self.load_custom_vocabularies(custom_vocabularies)
-        self.load_custom_concepts(custom_vocabularies)
+        self.load_custom_classes(class_ids, class_files)
+        self.load_custom_vocabularies(vocab_ids, vocab_files)
+        self.load_custom_concepts(vocab_ids, CONCEPT_FILE_PATTERN)
         # TODO: remove obsolete versions (i.e. cleanup in case of renaming of vocabs/classes);
         #  if the name has been changed, the previous drop won't find them
         # self.drop_unused_custom_concepts()
         # self.drop_unused_custom_vocabularies()
         # self.drop_unused_custom_classes()
 
-    def get_custom_vocabulary_names(self, file_pattern):
+    def get_custom_vocabulary_ids_and_files(self, file_pattern):
 
-        vocabularies = {}
+        vocab_ids = set()
+        vocab_files = set()
 
         for vocab_file in self.path_custom_vocabularies.glob(file_pattern):
 
@@ -145,23 +146,25 @@ class Wrapper(BaseWrapper):
                 if self.check_if_existing_vocab_version(vocab_id, vocab_version):
                     continue
 
-                vocabularies[vocab_id] = vocab_file.name
+                vocab_ids.add(vocab_id)
+                vocab_files.add(vocab_file.name)
 
-        return vocabularies
+        return list(vocab_ids), list(vocab_files)
 
     def check_if_existing_vocab_version(self, vocab_id, vocab_version):
 
         with self.db.session_scope() as session:
             existing_record = \
-                session.query(vocab.BaseVocabulary) \
-                .filter(vocab.BaseVocabulary.vocabulary_id == vocab_id) \
-                .filter(vocab.BaseVocabulary.vocabulary_version == vocab_version) \
+                session.query(cdm.Vocabulary) \
+                .filter(cdm.Vocabulary.vocabulary_id == vocab_id) \
+                .filter(cdm.Vocabulary.vocabulary_version == vocab_version) \
                 .one_or_none()
             return False if not existing_record else True
 
-    def get_custom_class_names(self, file_pattern):
+    def get_custom_class_ids_and_files(self, file_pattern):
 
-        classes = {}
+        class_ids = set()
+        class_files = set()
 
         for class_file in self.path_custom_vocabularies.glob(file_pattern):
             df = pd.read_csv(class_file, sep='\t')
@@ -173,57 +176,49 @@ class Wrapper(BaseWrapper):
                 if self.check_if_existing_custom_class(class_id, class_name, class_concept_id):
                     continue
 
-                classes[class_id] = class_file.name
+                class_ids.add(class_id)
+                class_files.add(class_file)
 
-        return classes
+        return list(class_ids), list(class_files)
 
     def check_if_existing_custom_class(self, class_id, class_name, class_concept_id):
 
         with self.db.session_scope() as session:
             existing_record = \
-                session.query(vocab.BaseConceptClass) \
-                .filter(vocab.BaseConceptClass.concept_class_id == class_id) \
-                .filter(vocab.BaseConceptClass.concept_class_name == class_name) \
-                .filter(vocab.BaseConceptClass.concept_class_concept_id == class_concept_id) \
+                session.query(cdm.ConceptClass) \
+                .filter(cdm.ConceptClass.concept_class_id == class_id) \
+                .filter(cdm.ConceptClass.concept_class_name == class_name) \
+                .filter(cdm.ConceptClass.concept_class_concept_id == class_concept_id) \
                 .one_or_none()
             return False if not existing_record else True
 
-    def drop_custom_concepts(self, custom_vocabularies):
+    def drop_custom_concepts(self, vocab_ids):
 
-        if custom_vocabularies:
-            vocabs_to_drop = [custom_vocabularies.keys()]
-
+        if vocab_ids:
             with self.db.session_scope() as session:
-                session.query(vocab.BaseConcept) \
-                    .filter(vocab.BaseConcept.vocabulary_id._in(vocabs_to_drop)) \
+                session.query(cdm.Concept) \
+                    .filter(cdm.Concept.vocabulary_id._in(vocab_ids)) \
                     .delete()
 
-    def drop_custom_vocabularies(self, custom_vocabularies):
+    def drop_custom_vocabularies(self, vocab_ids):
 
-        if custom_vocabularies:
-            vocabs_to_drop = [custom_vocabularies.keys()]
-
+        if vocab_ids:
             with self.db.session_scope() as session:
-                session.query(vocab.BaseVocabulary) \
-                    .filter(vocab.BaseVocabulary.vocabulary_id._in(vocabs_to_drop)) \
+                session.query(cdm.Vocabulary) \
+                    .filter(cdm.Vocabulary.vocabulary_id._in(vocab_ids)) \
                     .delete()
 
-    def drop_custom_classes(self, custom_classes):
+    def drop_custom_classes(self, class_ids):
 
-        if custom_classes:
-            classes_to_drop = [custom_classes.keys()]
-
+        if class_ids:
             with self.db.session_scope() as session:
-                session.query(vocab.BaseConceptClass) \
-                    .filter(vocab.BaseConceptClass.concept_class_id._in(classes_to_drop)) \
+                session.query(cdm.ConceptClass) \
+                    .filter(cdm.ConceptClass.concept_class_id._in(class_ids)) \
                     .delete()
 
-    def load_custom_classes(self, custom_classes):
+    def load_custom_classes(self, class_ids, class_files):
 
-        if custom_classes:
-
-            class_ids = [custom_classes.keys()]
-            class_files = [custom_classes.values()]
+        if class_ids:
 
             with self.db.session_scope() as session:
 
@@ -240,12 +235,9 @@ class Wrapper(BaseWrapper):
                         ))
                     session.add_all(records)
 
-    def load_custom_vocabularies(self, custom_vocabularies):
+    def load_custom_vocabularies(self, vocab_ids, vocab_files):
 
-        if custom_vocabularies:
-
-            vocab_ids = [custom_vocabularies.keys()]
-            vocab_files = [custom_vocabularies.values()]
+        if vocab_ids:
 
             with self.db.session_scope() as session:
 
@@ -264,11 +256,9 @@ class Wrapper(BaseWrapper):
                         ))
                     session.add_all(records)
 
-    def load_custom_concepts(self, custom_vocabularies, concept_file_pattern):
+    def load_custom_concepts(self, vocab_ids, concept_file_pattern):
 
-        if custom_vocabularies:
-
-            vocab_ids = [custom_vocabularies.keys()]
+        if vocab_ids:
 
             with self.db.session_scope() as session:
 
