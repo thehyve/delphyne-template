@@ -218,39 +218,79 @@ class Wrapper(BaseWrapper):
                     .filter(vocab.BaseConceptClass.concept_class_id._in(classes_to_drop)) \
                     .delete()
 
-    def load_custom_classes(self, custom_vocabularies):
-        pass
+    def load_custom_classes(self, custom_classes):
 
-        # for concept_class_id in class_list:
-        #     session.add(
-        #         ConceptClass(
-        #             concept_class_id=concept_class_id,
-        #             concept_class_concept_id=0,  # We could make separate concept and link it
-        #             concept_class_name=concept_class_id
-        #         )
-        #     )
+        if custom_classes:
+
+            class_ids = [custom_classes.keys()]
+            class_files = [custom_classes.values()]
+
+            with self.db.session_scope() as session:
+
+                for class_file in class_files:
+                    df = pd.read_csv(self.path_custom_vocabularies / class_file, sep='\t')
+                    df = df[df['concept_class_id'].isin(class_ids)]
+
+                    records = []
+                    for _,row in df.iterrows():
+                        records.append(cdm.ConceptClass(
+                            concept_class_id=row['concept_class_id'],
+                            concept_class_name=row['concept_class_id'],
+                            concept_class_concept_id=row['concept_class_concept_id']
+                        ))
+                    session.add_all(records)
 
     def load_custom_vocabularies(self, custom_vocabularies):
-        pass
 
-        # TODO: what's the difference?
-        # conn = self.db.engine.connect()
-        # session = self.db.get_new_session()
-        #
-        # session.add(
-        #     cdm.Vocabulary(
-        #         vocabulary_id='CUSTOM_VOCAB',
-        #         vocabulary_concept_id=0,  # We could make separate concept and link it
-        #         vocabulary_name='CUSTOM_VOCAB',
-        #         vocabulary_reference='CUSTOM_VOCAB',
-        #         vocabulary_version='vX.Y.Z'
-        #     )
-        # )
-        # session.commit()
-        # session.close()
+        if custom_vocabularies:
 
-    def load_custom_concepts(self, custom_vocabularies):
-        pass
+            vocab_ids = [custom_vocabularies.keys()]
+            vocab_files = [custom_vocabularies.values()]
+
+            with self.db.session_scope() as session:
+
+                for vocab_file in vocab_files:
+                    df = pd.read_csv(self.path_custom_vocabularies / vocab_file, sep='\t')
+                    df = df[df['vocabulary_id'].isin(vocab_ids)]
+
+                    records = []
+                    for _, row in df.iterrows():
+                        records.append(cdm.Vocabulary(
+                            vocabulary_id=row['vocabulary_id'],
+                            vocabulary_name=row['vocabulary_name'],
+                            vocabulary_reference=row['vocabulary_reference'],
+                            vocabulary_version=row['vocabulary_version'],
+                            vocabulary_concept_id=row['vocabulary_concept_id']
+                        ))
+                    session.add_all(records)
+
+    def load_custom_concepts(self, custom_vocabularies, concept_file_pattern):
+
+        if custom_vocabularies:
+
+            vocab_ids = [custom_vocabularies.keys()]
+
+            with self.db.session_scope() as session:
+
+                for concept_file in self.path_custom_vocabularies.glob(concept_file_pattern):
+                    df = pd.read_csv(concept_file, sep='\t')
+                    df = df[df['vocabulary_id'].isin(vocab_ids)]
+
+                    records = []
+                    for _, row in df.iterrows():
+                        records.append(cdm.Concept(
+                            concept_id=row['concept_id'],
+                            concept_name=row['concept_name'],
+                            domain_id=row['domain_id'],
+                            vocabulary_id=row['vocabulary_id'],
+                            concept_class_id=row['concept_class_id'],
+                            standard_concept=row['standard_concept'],
+                            concept_code=row['concept_code'],
+                            valid_start_date=row['valid_start_date'],
+                            valid_end_date=row['valid_end_date'],
+                            invalid_reason=row['invalid_reason']
+                        ))
+                    session.add_all(records)
 
     def drop_unused_custom_concepts(self):
         pass
