@@ -29,10 +29,10 @@ logger = logging.getLogger(__name__)
 
 
 class Wrapper(BaseWrapper):
-    cdm = cdm
 
     def __init__(self, config: MainConfig):
-        super().__init__(config, cdm.Base)
+        super().__init__(config, cdm.Base, cdm)
+
         # Load config settings
         self.path_mapping_tables = Path('./resources/mapping_tables')
         self.path_sql_transformations = Path('./src/main/sql')
