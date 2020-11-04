@@ -4,7 +4,7 @@ database:
   port: 5432
   database_name: 'ohdsi'
   username: 'postgres'
-  # Comment out password to provide at runtime
+  # If no password is needed, or to provide at runtime, leave blank
   password: 'postgres'
 
 # The schema names of the OMOP CDM (target schema) and the vocabulary
@@ -16,12 +16,6 @@ schema_translate_map:
   vocabulary_schema: 'vocab'
 
 run_options:
-  # A module from omop-etl-wrapper.cdm, which contains the OMOP ORM
-  # table definitions. Choose from "cdm531", "cdm600" or "hybrid".
-  # (not implemented yet) E.g.
-  cdm: 'hybrid'
-  # explain param (not implemented yet)
-  source_data_folder: './resources/source_data'
   # add option for loading the regular OMOP vocabularies? (not implemented yet)
   # ask for confirmation?
   skip_vocabulary_loading: True
@@ -32,8 +26,6 @@ run_options:
   # Write two additional tsv files in the logs folder, with more
   # detailed information on source data counts and ETL transformations.
   write_reports: False
-  # Generate more extensive logging output
-  debug_mode: False
 
 # sql_parameters are optional. They can be used together with parameterized
 # raw SQL queries, of which the placeholders (e.g. schema names, values)

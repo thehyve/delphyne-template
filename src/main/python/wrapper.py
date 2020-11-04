@@ -12,20 +12,17 @@
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
 
-# !/usr/bin/env python3
-
-from pathlib import Path
 import logging
+from pathlib import Path
+
 from omop_etl_wrapper import Wrapper as BaseWrapper
+from omop_etl_wrapper.config.models import MainConfig
+
 from src.main.python.transformation import *
-from src.main.python.model.sourcedata import SourceData # TODO: use local version for the moment, will be made general (for data files & database)
 from src.main.python.util import VariableConceptMapper # TODO: add to package?
 from src.main.python.util import OntologyConceptMapper # TODO: add to package?
 from src.main.python.util import RegimenExposureMapper # TODO: add to package?
-
-# NOTE: select the desired target CDM version below
-from omop_etl_wrapper.cdm import cdm531 as cdm
-# from omop_etl_wrapper.cdm import cdm600 as cdm
+from src.main.python import cdm
 
 
 logger = logging.getLogger(__name__)
@@ -34,10 +31,9 @@ logger = logging.getLogger(__name__)
 class Wrapper(BaseWrapper):
     cdm = cdm
 
-    def __init__(self, config):
-        super().__init__(config)
+    def __init__(self, config: MainConfig):
+        super().__init__(config, cdm.Base)
         # Load config settings
-        self.source_folder = Path(config['run_options']['source_data_folder'])
         self.path_mapping_tables = Path('./resources/mapping_tables')
         self.path_sql_transformations = Path('./src/main/sql')
         # Load data to objects
@@ -48,7 +44,6 @@ class Wrapper(BaseWrapper):
         self.sample_source_table = None
 
     def transform(self):
-
         # NOTE: replace the following with project-specific transformations from python/transformations/ or sql/ folder!
         # make sure execution follows order of table dependencies (see cdm model)
         self.execute_transformation(dm_to_person)
@@ -71,8 +66,8 @@ class Wrapper(BaseWrapper):
         self.load_custom_vocabularies()
 
         # Load source to concept mappings
-        self.truncate_stcm_table()
-        self.load_stcm()
+        # self.truncate_stcm_table()
+        # self.load_stcm()
 
         # Load source data
 
@@ -83,15 +78,8 @@ class Wrapper(BaseWrapper):
 
         self.transform()
 
-        self.etl_stats.write_summary_files()
+        # self.etl_stats.write_summary_files()
         self.etl_stats.log_summary()
 
         # self.log_summary()
         # self.log_runtime()
-
-    # TODO: change the following to load these programmatically from a source data folder?
-    # NOTE: replace the following with project-specific source tables and function names!
-    def get_sample_source_table(self):
-        if not self.sample_source_table:
-            self.sample_source_table = SourceData(self.source_folder / 'sample_source_table.csv')
-        return self.sample_source_table

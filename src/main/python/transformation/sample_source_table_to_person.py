@@ -19,8 +19,6 @@ from typing import List, TYPE_CHECKING
 # sample functions, remove if not used
 from ..util import create_person_id_from_subject_id
 from ..util import get_datetime
-import pandas as pd
-
 
 if TYPE_CHECKING:
     from src.main.python.wrapper import Wrapper
@@ -28,21 +26,21 @@ if TYPE_CHECKING:
 
 def sample_source_table_to_person(wrapper: Wrapper) -> List[Wrapper.cdm.Person]:
 
-    source = pd.DataFrame(wrapper.get_sample_source_table())
+    source = wrapper.source_data.get_source_file('sample_source_table.csv')
+    df = source.get_csv_as_df(apply_dtypes=False)
 
     # The use of DataFrame objects is recommended for:
     # - data filtering
     # - joins between multiple source tables
     # alternatively, you could use the dictionary returned by the wrapper method directly:
 
-    # source = wrapper.get_sample_source_table() # Dictionary { row : { variable : value } }
-    #
-    # for row in source:
+    # rows = source.get_csv_as_list_of_dicts()  # Dictionary { row : { variable : value } }
+    # for row in rows:
     #     for variable, value in row.items():
     #         r = ...
 
     records = []
-    for _, row in source.iterrows():
+    for _, row in df.iterrows():
         r = wrapper.cdm.Person(
             person_id=create_person_id_from_subject_id(row['subject_id']),
             gender_concept_id=row['sex'],
