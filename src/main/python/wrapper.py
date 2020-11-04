@@ -40,7 +40,6 @@ class Wrapper(BaseWrapper):
         self.source_folder = Path(config['run_options']['source_data_folder'])
         self.path_mapping_tables = Path('./resources/mapping_tables')
         self.path_sql_transformations = Path('./src/main/sql')
-        self.skip_vocabulary_loading: bool = config['run_options']['skip_vocabulary_loading']
         # Load data to objects
         # self.variable_concept_mapper = VariableConceptMapper(self.path_mapping_tables)
         # self.ontology_concept_mapper = OntologyConceptMapper(self.path_mapping_tables)
@@ -69,11 +68,7 @@ class Wrapper(BaseWrapper):
         self.create_schemas()
         self.drop_cdm()
         self.create_cdm()
-
-        # Load custom concepts
-        if not self.skip_vocabulary_loading:
-            logger.info('Loading custom vocabularies')
-            self.load_custom_vocabulary_tables()
+        self.load_custom_vocabularies()
 
         # Load source to concept mappings
         self.truncate_stcm_table()
