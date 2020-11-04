@@ -20,7 +20,7 @@ def dm_to_person(wrapper: Wrapper) -> List[Wrapper.cdm.Person]:
                ethnicity_source_concept_id=0,
                )
     records.append(p)
-    p2 = Person2(gender_concept_id=2,
+    p2 = Person2(gender_concept_id=8532,
                  year_of_birth=1940,
                  race_concept_id=0,
                  ethnicity_concept_id=0,
