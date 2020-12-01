@@ -10,7 +10,6 @@ from omop_etl_wrapper.cdm.cdm531.clinical_data import *
 from omop_etl_wrapper.cdm.cdm531.health_system_data import *
 from omop_etl_wrapper.cdm.cdm531.health_economics import *
 from omop_etl_wrapper.cdm.cdm531.derived_elements import *
-from omop_etl_wrapper.cdm.metadata import *
 
 from omop_etl_wrapper.cdm.cdm600.clinical_data import *
 from omop_etl_wrapper.cdm.cdm600.health_system_data import *
@@ -18,6 +17,7 @@ from omop_etl_wrapper.cdm.cdm600.health_economics import *
 from omop_etl_wrapper.cdm.cdm600.derived_elements import *
 
 from omop_etl_wrapper.cdm.vocabularies import *
+from omop_etl_wrapper.cdm.metadata import *
 
 from omop_etl_wrapper.cdm.cdm_extensions.oncology import *
 
