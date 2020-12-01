@@ -4,6 +4,7 @@
 # more info.
 # TODO: add documentation (read the docs?) on how to customize
 
+from sqlalchemy import MetaData
 from sqlalchemy.ext.declarative import declarative_base
 
 from omop_etl_wrapper.cdm.cdm531.clinical_data import *
@@ -21,10 +22,12 @@ from omop_etl_wrapper.cdm.metadata import *
 
 from omop_etl_wrapper.cdm.cdm_extensions.oncology import *
 
+from omop_etl_wrapper.database import NAMING_CONVENTION
+
 from src.main.python.cdm import custom
 
 Base = declarative_base()
-
+Base.metadata = MetaData(naming_convention=NAMING_CONVENTION)
 
 ########################################################################
 #                            CUSTOM TABLES                             #
