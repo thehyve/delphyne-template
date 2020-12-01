@@ -1,9 +1,0 @@
-COPY VOCABULARY (vocabulary_id, vocabulary_name, vocabulary_reference, vocabulary_version, vocabulary_concept_id) FROM 'abs/path/to/VOCABULARY.csv' WITH DELIMITER E'\t' CSV HEADER QUOTE E'\b' ;
-COPY CONCEPT_CLASS (concept_class_id, concept_class_name, concept_class_concept_id) FROM 'abs/path/to/CONCEPT_CLASS.csv' WITH DELIMITER E'\t' CSV HEADER QUOTE E'\b' ;
-COPY DOMAIN (domain_id, domain_name, domain_concept_id) FROM 'abs/path/to/DOMAIN.csv' WITH DELIMITER E'\t' CSV HEADER QUOTE E'\b' ;
-COPY CONCEPT (concept_id, concept_name, domain_id, vocabulary_id, concept_class_id, standard_concept, concept_code, valid_start_date, valid_end_date, invalid_reason) FROM 'abs/path/to/CONCEPT.csv' WITH DELIMITER E'\t' CSV HEADER QUOTE E'\b' ;
-COPY DRUG_STRENGTH (drug_concept_id, ingredient_concept_id, amount_value, amount_unit_concept_id, numerator_value, numerator_unit_concept_id, denominator_value, denominator_unit_concept_id, box_size, valid_start_date, valid_end_date, invalid_reason) FROM 'abs/path/to/DRUG_STRENGTH.csv' WITH DELIMITER E'\t' CSV HEADER QUOTE E'\b' ;
-COPY RELATIONSHIP (relationship_id, relationship_name, is_hierarchical, defines_ancestry, reverse_relationship_id, relationship_concept_id) FROM 'abs/path/to/RELATIONSHIP.csv' WITH DELIMITER E'\t' CSV HEADER QUOTE E'\b' ;
-COPY CONCEPT_RELATIONSHIP (concept_id_1, concept_id_2, relationship_id, valid_start_date, valid_end_date, invalid_reason) FROM 'abs/path/to/CONCEPT_RELATIONSHIP.csv' WITH DELIMITER E'\t' CSV HEADER QUOTE E'\b' ;
-COPY CONCEPT_ANCESTOR (ancestor_concept_id, descendant_concept_id, min_levels_of_separation, max_levels_of_separation) FROM 'abs/path/to/CONCEPT_ANCESTOR.csv' WITH DELIMITER E'\t' CSV HEADER QUOTE E'\b' ;
-COPY CONCEPT_SYNONYM (concept_id, concept_synonym_name, language_concept_id) FROM 'abs/path/to/CONCEPT_SYNONYM.csv' WITH DELIMITER E'\t' CSV HEADER QUOTE E'\b' ;
