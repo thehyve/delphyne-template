@@ -49,6 +49,7 @@ class Wrapper(BaseWrapper):
         # make sure execution follows order of table dependencies (see cdm model)
         self.execute_transformation(dm_to_person)
         self.execute_transformation(sample_source_table_to_person)
+        self.execute_transformation(sample_source_table_to_condition_occurrence)
         # self.execute_sql_file(self.path_sql_transformations / 'sample_script.sql')
 
     def run(self):
