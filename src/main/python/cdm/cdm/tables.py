@@ -268,6 +268,10 @@ class DrugStrength(BaseDrugStrength, Base):
     pass
 
 
+class SourceToConceptMapVersion(BaseSourceToConceptMapVersion, Base):
+    pass
+
+
 # class Cohort(BaseCohortCdm531, Base):
 #     pass
 
