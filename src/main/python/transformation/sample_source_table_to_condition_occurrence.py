@@ -29,16 +29,16 @@ def sample_source_table_to_condition_occurrence(wrapper: Wrapper) -> List[Wrappe
     df = source.get_csv_as_df(apply_dtypes=False)
 
     # sample use of CodeMapper
-    ICD10_codes = list(df['condition_ICD10'].values)
-    ICD10_mapper = wrapper.code_mapper.generate_code_mapping_dictionary(
-        vocabulary_id='ICD10',
-        restrict_to_codes=ICD10_codes
+    ICD10CM_codes = list(df['condition_ICD10CM'].values)
+    ICD10CM_mapper = wrapper.code_mapper.generate_code_mapping_dictionary(
+        vocabulary_id='ICD10CM',
+        restrict_to_codes=ICD10CM_codes
     )
 
     records = []
     for _, row in df.iterrows():
 
-        condition_mapping = ICD10_mapper.lookup(code=row['condition_ICD10'], first_only=True)
+        condition_mapping = ICD10CM_mapper.lookup(code=row['condition_ICD10CM'], first_only=True)
 
         r = wrapper.cdm.ConditionOccurrence()
         r.person_id=create_person_id_from_subject_id(row['subject_id'])
