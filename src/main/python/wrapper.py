@@ -53,35 +53,19 @@ class Wrapper(BaseWrapper):
         # self.execute_sql_file(self.path_sql_transformations / 'sample_script.sql')
 
     def run(self):
-
-        # self.start_timing()
-
-        logger.info('{:-^100}'.format(' Source Counts '))
-        # self.log_tables_rowcounts(self.source_folder)
-
-        logger.info('{:-^100}'.format(' Setup '))
-
         # Prepare source
         self.create_schemas()
         self.drop_cdm()
         self.create_cdm()
-        self.load_custom_vocabularies()
+
+        # Load custom vocabularies
+        self.vocab_manager.load_custom_vocabularies()
 
         # Load source to concept mappings
-        # self.truncate_stcm_table()
-        # self.load_stcm()
+        self.vocab_manager.load_stcm()
 
         # Load source data
-
-        logger.info('{:-^100}'.format(' ETL '))
-
-        # These queries are cdm6 specific
-        # self.stem_table_to_domains()
-
         self.transform()
 
         # self.etl_stats.write_summary_files()
         self.etl_stats.log_summary()
-
-        # self.log_summary()
-        # self.log_runtime()
