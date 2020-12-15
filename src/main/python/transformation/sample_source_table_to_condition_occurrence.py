@@ -38,7 +38,7 @@ def sample_source_table_to_condition_occurrence(wrapper: Wrapper) -> List[Wrappe
     records = []
     for _, row in df.iterrows():
 
-        condition_mapping = ICD10CM_mapper.lookup(source_concept_code=row['condition_ICD10CM'], first_only=True)
+        condition_mapping = ICD10CM_mapper.lookup(source_code=row['condition_ICD10CM'], first_only=True)
 
         r = wrapper.cdm.ConditionOccurrence()
         r.person_id=create_person_id_from_subject_id(row['subject_id'])
