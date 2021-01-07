@@ -7,22 +7,22 @@
 from sqlalchemy import MetaData
 from sqlalchemy.ext.declarative import declarative_base
 
-from omop_etl_wrapper.cdm.cdm531.clinical_data import *
-from omop_etl_wrapper.cdm.cdm531.health_system_data import *
-from omop_etl_wrapper.cdm.cdm531.health_economics import *
-from omop_etl_wrapper.cdm.cdm531.derived_elements import *
+from delphyne.cdm.cdm531.clinical_data import *
+from delphyne.cdm.cdm531.health_system_data import *
+from delphyne.cdm.cdm531.health_economics import *
+from delphyne.cdm.cdm531.derived_elements import *
 
-from omop_etl_wrapper.cdm.cdm600.clinical_data import *
-from omop_etl_wrapper.cdm.cdm600.health_system_data import *
-from omop_etl_wrapper.cdm.cdm600.health_economics import *
-from omop_etl_wrapper.cdm.cdm600.derived_elements import *
+from delphyne.cdm.cdm600.clinical_data import *
+from delphyne.cdm.cdm600.health_system_data import *
+from delphyne.cdm.cdm600.health_economics import *
+from delphyne.cdm.cdm600.derived_elements import *
 
-from omop_etl_wrapper.cdm.vocabularies import *
-from omop_etl_wrapper.cdm.metadata import *
+from delphyne.cdm.vocabularies import *
+from delphyne.cdm.metadata import *
 
-from omop_etl_wrapper.cdm.cdm_extensions.oncology import *
+from delphyne.cdm.cdm_extensions.oncology import *
 
-from omop_etl_wrapper.database import NAMING_CONVENTION
+from delphyne.database import NAMING_CONVENTION
 
 from src.main.python.cdm import custom
 

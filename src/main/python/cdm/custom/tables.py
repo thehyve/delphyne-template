@@ -1,4 +1,4 @@
-from omop_etl_wrapper.cdm.cdm600.clinical_data import BasePersonCdm600
+from delphyne.cdm.cdm600.clinical_data import BasePersonCdm600
 from sqlalchemy import Column, Date, ForeignKey, Integer, String
 from sqlalchemy.ext.declarative import declared_attr
 from sqlalchemy.orm import relationship
