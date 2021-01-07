@@ -1,6 +1,6 @@
 # Template for the OHDSI ETL Wrapper
 An ETL template for future OHDSI projects.
-Provides a standard repository structure that implements the functionality of the [omop-etl-wrapper](https://github.com/thehyve/omop-etl-wrapper) Python package.
+Provides a standard repository structure that implements the functionality of the [delphyne](https://github.com/thehyve/delphyne) Python package.
 
 NOTE: This template has only been tested with PostgreSQL.
 
@@ -14,7 +14,7 @@ _TODO_
 - `README-sample.md` provides a basic README file for the project, including instructions on how to run the ETL.
   Use it to **replace this readme** after completing the initial ETL setup.
 - `requirements.txt` should contain project-specific ETL dependencies. It is **highly recommended** to pin packages to a specific version.
-  The `omop-etl-wrapper` is a mandatory dependency and is always included by default.
+  `delphyne` is a mandatory dependency and is always included by default.
 
 ### `/config`
 ETL configuration folder, contains:
@@ -45,8 +45,8 @@ The mapping tables should adopt an **Usagi-compatible format** whenever possible
 
 ### `src/main/python`
 Contains the main ETL code.
-- `custom_tables` collects any custom table needed in the project that is not available from the selected `omop_etl_wrapper` CDM version. 
-These will be automatically handled by the ETL once bound to a `Base` object, also provided in the `omop_etl_wrapper` package.
+- `custom_tables` collects any custom table needed in the project that is not available from the selected `delphyne` CDM version.
+These will be automatically handled by the ETL once bound to a `Base` object, also provided in the `delphyne` package.
 The `TreatmentLine` table is provided as an example. Remove this folder if no custom table is needed.
 - `transformation/` collects the project-specific transformation scripts for each source data table - target CDM table combination.
 The scripts must follow the mapping specifications closely, and vice-versa the mapping specifications must reflect any implementation decision made in the scripts.
