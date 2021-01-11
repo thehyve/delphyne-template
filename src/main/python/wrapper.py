@@ -22,7 +22,7 @@ class Wrapper(BaseWrapper):
         self.execute_transformation(dm_to_person)
         self.execute_transformation(sample_source_table_to_person)
         self.execute_transformation(sample_source_table_to_condition_occurrence)
-        # self.execute_sql_file('sample_script.sql')
+        self.execute_sql_file('sample_script.sql')
 
     def run(self):
         # Prepare source
