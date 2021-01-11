@@ -1,5 +1,4 @@
-# Look into all CDM tables to derive observation_period
-# NOTE: includes custom table TreatmentLine
+-- Look into all CDM tables to derive observation_period
 
 INSERT INTO cdm.observation_period
 (
