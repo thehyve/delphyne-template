@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 
+import click
 import logging
 from pathlib import Path
-
-import click
 import sys
+
 from delphyne.config.models import MainConfig
 from delphyne.log.setup_logging import setup_logging
 from delphyne.util.io import read_yaml_file
@@ -21,19 +21,15 @@ logger = logging.getLogger(__name__)
               help='Path to the yaml configuration file.',
               type=click.Path(file_okay=True, exists=True, readable=True))
 def main(config):
-    # Setup logging
-    setup_logging()
 
-    # Load configuration
+    setup_logging()
+    logger.info('ETL version {}'.format(__version__))
+
     config = MainConfig(**read_yaml_file(Path(config)))
 
     # Initialize ETL with configuration parameters
     etl = Wrapper(config)
 
-    # TODO: ok to log this here? shall we log it next to wrapper version info?
-    logger.info('ETL version {}'.format(__version__))
-
-    # Run ETL
     etl.run()
 
 

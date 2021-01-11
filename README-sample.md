@@ -1,15 +1,16 @@
 # PROJECT TITLE
-Project description (e.g. PROJECT XYZ ETL to OMOP CDM vX.X).
+Project description (e.g. PROJECT XXX ETL to OMOP CDM vX.X).
 
 ## Dependencies
-Python 3.6+ with the following packages:
-- `omop-etl-wrapper == 0.1.0`
-- `click >= 7.1.1`
-- `...`
 
-The default OMOP CDM vocabulary, additionally including:
-- vocabulary XYZ (from Athena or other official source)
-- custom XYZ vocabulary (e.g. project-specific 2B+ codes)
+### Code
+- Python 3.X with packages in `requirements.txt`
+- R with packages `yaml` and `DatabaseConnector` *(NOTE: only needed if using R test framework)*
+
+### Vocabularies
+- default OMOP vocabularies from [Athena](https://athena.ohdsi.org/)
+- additional Athena vocabularies: XXX (code XXX), ...
+- custom vocabularies (e.g. project-specific 2B+ codes): XXX, ...
 
 ## How to execute
 ```bash
