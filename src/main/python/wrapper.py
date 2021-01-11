@@ -3,8 +3,8 @@ import logging
 from delphyne import Wrapper as BaseWrapper
 from delphyne.config.models import MainConfig
 
-from src.main.python.transformation import *
 from src.main.python import cdm
+from src.main.python.transformation import *
 
 
 logger = logging.getLogger(__name__)
