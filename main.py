@@ -30,7 +30,6 @@ def main(config):
     # Initialize ETL with configuration parameters
     etl = Wrapper(config)
 
-    # Run ETL
     etl.run()
 
 
