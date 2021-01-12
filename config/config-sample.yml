@@ -19,8 +19,8 @@ schema_translate_map:
   vocabulary_schema: 'vocab'
 
 run_options:
-  # add option for loading the regular OMOP vocabularies? (not implemented yet)
-  # ask for confirmation?
+  # If True, all contents in resources/standard_vocabularies will be ignored,
+  # regardless of whether you call load_standard_vocabularies in your code.
   skip_vocabulary_loading: True
   # If True, all contents in resources/custom_vocabularies will be ignored,
   # regardless of whether you call load_custom_vocabularies in your code.
