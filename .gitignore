@@ -12,7 +12,7 @@ src/test/R/errorReport.txt
 # logs
 /logs/
 # standard vocabulary files
-resources/standard_vocabularies/*.csv
+resources/vocabularies/standard/*.csv
 
 ### Automatically generated .gitignore ###
 # Created by https://www.gitignore.io/api/osx,pycharm,windows,intellij

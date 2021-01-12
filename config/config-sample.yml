@@ -19,14 +19,14 @@ schema_translate_map:
   vocabulary_schema: 'vocab'
 
 run_options:
-  # If True, all contents in resources/standard_vocabularies will be ignored,
+  # If True, all contents in resources/vocabularies/standard will be ignored,
   # regardless of whether you call load_standard_vocabularies in your code.
   skip_vocabulary_loading: True
-  # If True, all contents in resources/custom_vocabularies will be ignored,
+  # If True, all contents in resources/vocabularies/custom will be ignored,
   # regardless of whether you call load_custom_vocabularies in your code.
   skip_custom_vocabulary_loading: False
-  # If True, all contents in resources/source_to_concept will be ignored,
-  # regardless of whether you call load_stcm in your code.
+  # If True, all contents in resources/vocabularies/source_to_concept_map
+  # will be ignored, regardless of whether you call load_stcm in your code.
   skip_source_to_concept_map_loading: False
   # Write two additional tsv files in the logs folder, with more
   # detailed information on source data counts and ETL transformations.
