@@ -17,8 +17,8 @@ class Wrapper(BaseWrapper):
         super().__init__(config, cdm)
 
     def transform(self):
-        # NOTE: replace the following with project-specific transformations from python/transformations/ or sql/ folder!
-        # make sure execution follows order of table dependencies (see cdm model)
+        # Replace the following with project-specific transformations
+        # from python/transformations/ or sql/ folder!
         self.execute_transformation(dm_to_person)
         self.execute_transformation(sample_source_table_to_person)
         self.execute_transformation(sample_source_table_to_condition_occurrence)
