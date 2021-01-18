@@ -31,9 +31,9 @@ class Wrapper(BaseWrapper):
         self.create_cdm()
 
         # Load vocabularies and source_to_concept_map tables
-        self.vocab_manager.load_standard_vocabularies()
-        self.vocab_manager.load_custom_vocabularies()
-        self.vocab_manager.load_stcm()
+        self.vocab_manager.standard_vocabularies.load()
+        self.vocab_manager.custom_vocabularies.load()
+        self.vocab_manager.stcm.load()
 
         # Transform source data to the OMOP CDM
         self.transform()
