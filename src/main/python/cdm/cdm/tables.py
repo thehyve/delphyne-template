@@ -1,8 +1,7 @@
 # Here you define the specifics of your CDM.
-# Currently the standard OMOP CDM v5.3.1 is specified, but you can
+# Currently the standard OMOP CDM v6.0.0 is specified, but you can
 # customize if needed. See the documentation on defining your CDM for
 # more info.
-# TODO: add documentation (read the docs?) on how to customize
 
 from sqlalchemy import MetaData
 from sqlalchemy.ext.declarative import declarative_base
@@ -24,21 +23,9 @@ from delphyne.cdm.cdm_extensions.oncology import *
 
 from delphyne.database import NAMING_CONVENTION
 
-from src.main.python.cdm import custom
 
 Base = declarative_base()
 Base.metadata = MetaData(naming_convention=NAMING_CONVENTION)
-
-########################################################################
-#                            CUSTOM TABLES                             #
-########################################################################
-
-# class Person(custom.CustomPerson, Base):
-#     pass
-#
-#
-# class TreatmentLine(custom.BaseTreatmentLine, Base):
-#     pass
 
 
 ########################################################################
