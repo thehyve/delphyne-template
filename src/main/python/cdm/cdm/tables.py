@@ -21,6 +21,7 @@ from delphyne.cdm.vocabularies import *
 from delphyne.cdm.metadata import *
 
 from delphyne.cdm.cdm_extensions.oncology import *
+from delphyne.cdm.legacy import *
 
 from delphyne.database import NAMING_CONVENTION
 
@@ -272,14 +273,6 @@ class SourceToConceptMapVersion(BaseSourceToConceptMapVersion, Base):
     pass
 
 
-# class Cohort(BaseCohortCdm531, Base):
-#     pass
-
-
-# class CohortDefinition(BaseCohortDefinition, Base):
-#     pass
-
-
 ########################################################################
 #                              EXTENSIONS                              #
 ########################################################################
@@ -296,4 +289,25 @@ class SourceToConceptMapVersion(BaseSourceToConceptMapVersion, Base):
 # # Make sure to remove the regular Measurement class under CLINICAL DATA
 # # if using this extension
 # class Measurement(BaseMeasurementOncExt, Base):
+#     pass
+
+
+########################################################################
+#                              LEGACY                                  #
+########################################################################
+
+
+# class Cohort(BaseCohort, Base):
+#     pass
+
+
+# class CohortDefinition(BaseCohortDefinition, Base):
+#     pass
+
+
+# class CohortAttribute(BaseCohortAttribute, Base):
+#     pass
+
+
+# class AttributeDefinition(BaseAttributeDefinition, Base):
 #     pass
