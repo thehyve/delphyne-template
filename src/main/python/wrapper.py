@@ -23,7 +23,7 @@ class Wrapper(BaseWrapper):
         self.execute_transformation(sample_source_table_to_person)
         self.execute_transformation(sample_source_table_to_condition_occurrence)
 
-        # given a generator function, the batch transformation will insert 10 records at a time
+        # given a generator function, the batch transformation will insert 3 records at a time
         self.execute_batch_transformation(sample_batch_source_table_to_condition_occurrence,
                                           batch_size=3)
 
