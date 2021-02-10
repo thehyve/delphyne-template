@@ -4,7 +4,7 @@ from delphyne.cdm.schema_placeholders import CDM_SCHEMA
 from sqlalchemy import Column, Date, ForeignKey, Integer, String
 from sqlalchemy.orm import relationship
 
-from src.main.python.cdm.tables import Base
+from src.main.python.cdm.cdm.tables import Base
 
 
 # class BaseTreatmentLine(Base):
