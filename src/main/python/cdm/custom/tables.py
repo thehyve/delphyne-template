@@ -1,5 +1,6 @@
 """Custom table additions to the CDM model."""
 
+from delphyne.cdm.schema_placeholders import CDM_SCHEMA
 from sqlalchemy import Column, Date, ForeignKey, Integer, String
 from sqlalchemy.orm import relationship
 
@@ -8,7 +9,7 @@ from ..cdm.tables import Base
 
 # class BaseTreatmentLine(Base):
 #     __tablename__ = 'treatment_line'
-#     __table_args__ = {'schema': 'cdm_schema'}
+#     __table_args__ = {'schema': CDM_SCHEMA}
 #
 #     treatment_line_id = Column(Integer, primary_key=True)
 #     person_id = Column(ForeignKey('cdm_schema.person.person_id'), nullable=False, index=True)
