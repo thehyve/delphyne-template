@@ -2,8 +2,8 @@ from __future__ import annotations
 
 from typing import Generator, TYPE_CHECKING
 
-# sample function, remove import if not used
-from src.main.python.util import get_datetime
+# sample functions, remove imports if not used
+from src.main.python.util import create_person_id_from_subject_id, get_datetime
 
 if TYPE_CHECKING:
     from src.main.python.wrapper import Wrapper
@@ -22,6 +22,7 @@ def sample_batch_source_table_to_condition_occurrence(
 
     for row in data:
         yield wrapper.cdm.ConditionOccurrence(
+            person_id=create_person_id_from_subject_id(row['subject_id']),
             condition_start_datetime=get_datetime(),
             condition_concept_id=0,
             condition_source_concept_id=0,
