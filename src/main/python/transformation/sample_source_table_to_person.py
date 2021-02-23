@@ -2,8 +2,7 @@ from __future__ import annotations
 
 from typing import List, TYPE_CHECKING
 
-# sample functions, remove imports if not used
-from src.main.python.util import create_person_id_from_subject_id
+# sample function, remove import if not used
 from src.main.python.util import get_datetime
 
 if TYPE_CHECKING:
@@ -28,7 +27,6 @@ def sample_source_table_to_person(wrapper: Wrapper) -> List[Wrapper.cdm.Person]:
     records = []
     for _, row in df.iterrows():
         r = wrapper.cdm.Person(
-            person_id=create_person_id_from_subject_id(row['subject_id']),
             gender_concept_id=row['sex'],
             year_of_birth=get_datetime(row['date_of_birth']).year,
             race_concept_id=0,
