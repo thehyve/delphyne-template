@@ -22,7 +22,8 @@ def sample_batch_source_table_to_condition_occurrence(wrapper: Wrapper) -> Gener
     for row in data:
         yield wrapper.cdm.ConditionOccurrence(
             person_id=create_person_id_from_subject_id(row['subject_id']),
-            condition_start_datetime=get_datetime(),
+            condition_start_datetime=get_datetime(default_date='2020-01-01'),
+            condition_end_datetime=get_datetime(default_date='2020-12-31'),
             condition_concept_id=0,
             condition_source_concept_id=0,
             condition_status_concept_id=0,
