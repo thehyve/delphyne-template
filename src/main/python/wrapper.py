@@ -27,6 +27,7 @@ class Wrapper(BaseWrapper):
         self.execute_batch_transformation(sample_batch_source_table_to_condition_occurrence,
                                           batch_size=3)
 
+        self.execute_sql_transformation(observation_period_query)
         self.execute_sql_file('sample_script.sql')
 
     def run(self):
