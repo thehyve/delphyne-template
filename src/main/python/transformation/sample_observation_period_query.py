@@ -23,34 +23,25 @@ def observation_period_query(wrapper: Wrapper) -> Insert:
     obs_period = wrapper.get_cdm_table('observation_period')
 
     sel = select([
-        condition.columns.person_id,
-        func.coalesce(condition.columns.condition_start_date,
-                      condition.columns.condition_start_datetime).label('start_date'),
-        func.coalesce(condition.columns.condition_end_date,
-                      condition.columns.condition_end_datetime).label('end_date')
-    ])
-
-    j = join(person, sel, person.columns.person_id == sel.columns.person_id)
+        condition.c.person_id,
+        func.coalesce(condition.c.condition_start_date,
+                      condition.c.condition_start_datetime).label('start_date'),
+        func.coalesce(condition.c.condition_end_date,
+                      condition.c.condition_end_datetime).label('end_date')
+    ]).alias('sel_condition')
 
     sel2 = select([
-        j.columns.person_id.label('person_id'),
-        func.min(j.columns.start_date)
+        person.c.person_id.label('person_id'),
+        func.min(sel.c.start_date)
             .label('observation_period_start_date'),
-        func.max(func.max(j.columns.start_date), func.max(j.columns.end_date))
+        func.greatest(func.max(sel.c.start_date), func.max(sel.c.end_date))
             .label('observation_period_end_date'),
         # Period covering healthcare encounters)
         literal(44814724).label('period_type_concept_id')
-    ]).select_from(j)
+    ]).select_from(
+        join(person, sel, person.c.person_id == sel.c.person_id)
+    ).group_by(person.c.person_id)
 
     ins = obs_period.insert().from_select(sel2.columns, sel2)
-
-    # stage_w_columns = select(list(stage.columns) + [literal(1).label('IsCurrent'),
-    #                                                 literal(datetime(2018, 1, 23)).label(
-    #                                                     'FirstObserved'),
-    #                                                 literal(datetime(2018, 1, 23)).label(
-    #                                                     'LastObserved')])
-    # stmt = base.insert().from_select(stage_w_columns.columns, stage_w_columns)
-
-    # ins = obs_period.insert().from_select(sel2.columns, sel2)
 
     return ins
