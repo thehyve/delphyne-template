@@ -19,6 +19,7 @@ def observation_period_query(wrapper: Wrapper) -> Insert:
     observation = wrapper.get_cdm_table('observation')
     measurement = wrapper.get_cdm_table('measurement')
     obs_period = wrapper.get_cdm_table('observation_period')
+    death = wrapper.get_cdm_table('death')
 
     sel_condition = select([
         condition.c.person_id,
@@ -65,14 +66,35 @@ def observation_period_query(wrapper: Wrapper) -> Insert:
                       visit.c.visit_end_datetime).label('end_date')
     ])
 
-    all_periods = union(
-        sel_condition,
-        sel_drug,
-        sel_measurement,
-        sel_observation,
-        sel_procedure,
-        sel_visit
-    ).alias('all_periods')
+    if death:  # CDM 5.3.1
+
+        sel_death = select([
+            death.c.person_id,
+            func.coalesce(death.c.death_date,
+                          death.c.death_datetime).label('start_date'),
+            literal(None).label('end_date')
+        ])
+
+        all_periods = union(
+            sel_condition,
+            sel_drug,
+            sel_measurement,
+            sel_observation,
+            sel_procedure,
+            sel_visit,
+            sel_death
+        ).alias('all_periods')
+
+    else:
+
+        all_periods = union(
+            sel_condition,
+            sel_drug,
+            sel_measurement,
+            sel_observation,
+            sel_procedure,
+            sel_visit
+        ).alias('all_periods')
 
     sel = select([
         person.c.person_id.label('person_id'),
