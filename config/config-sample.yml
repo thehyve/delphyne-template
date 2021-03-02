@@ -1,11 +1,17 @@
 # Database connection
 database:
-  host: 'localhost'
+  # Database backend and (optionally) driver name, e.g. mssql+pyodbc
+  drivername: 'postgresql'
+  host: '127.0.0.1'  # (localhost)
   port: 5432
   database_name: 'ohdsi'
   username: 'postgres'
   # If no password is needed, or to provide at runtime, leave blank
   password: 'postgres'
+  # Any additional options to be passed on to the DBAPI (optional)
+  query:
+    # e.g.
+    # driver: 'ODBC Driver 17 for SQL Server'
 
 # (Relative) path to the source data folder (optional)
 source_data_folder: './resources/synthetic_data'

@@ -3,14 +3,15 @@ from __future__ import annotations
 from typing import Generator, TYPE_CHECKING
 
 # sample functions, remove imports if not used
-from src.main.python.util import create_person_id_from_subject_id
-from src.main.python.util import get_datetime
+from src.main.python.util import create_person_id_from_subject_id, get_datetime
 
 if TYPE_CHECKING:
     from src.main.python.wrapper import Wrapper
 
 
-def sample_batch_source_table_to_condition_occurrence(wrapper: Wrapper) -> Generator[Wrapper.cdm.ConditionOccurrence]:
+def sample_batch_source_table_to_condition_occurrence(
+        wrapper: Wrapper
+) -> Generator[Wrapper.cdm.ConditionOccurrence]:
     # Memory efficient inserting.
     # 1. iterate through source data with a generator
     # 2. return transformed records as a generator

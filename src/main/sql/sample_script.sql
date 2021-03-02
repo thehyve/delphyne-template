@@ -2,7 +2,6 @@
 
 INSERT INTO @cdm_schema.person
 (
-    person_id,
     gender_concept_id,
     year_of_birth,
     race_concept_id,
@@ -15,7 +14,6 @@ INSERT INTO @cdm_schema.person
     ethnicity_source_concept_id
 ) VALUES
 (
-    999,
     8532,
     1950,
     0,
