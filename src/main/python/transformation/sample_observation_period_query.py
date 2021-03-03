@@ -11,15 +11,14 @@ if TYPE_CHECKING:
 
 def observation_period_query(wrapper: Wrapper) -> Insert:
 
-    person = wrapper.get_cdm_table('person')
-    condition = wrapper.get_cdm_table('condition_occurrence')
-    visit = wrapper.get_cdm_table('visit_occurrence')
-    drug = wrapper.get_cdm_table('drug_exposure')
-    procedure = wrapper.get_cdm_table('procedure_occurrence')
-    observation = wrapper.get_cdm_table('observation')
-    measurement = wrapper.get_cdm_table('measurement')
-    obs_period = wrapper.get_cdm_table('observation_period')
-    death = wrapper.get_cdm_table('death')
+    person = wrapper.cdm.Person.__table__
+    condition = wrapper.cdm.ConditionOccurrence.__table__
+    visit = wrapper.cdm.VisitOccurrence.__table__
+    drug = wrapper.cdm.DrugExposure.__table__
+    procedure = wrapper.cdm.ProcedureOccurrence.__table__
+    observation = wrapper.cdm.Observation.__table__
+    measurement = wrapper.cdm.Measurement.__table__
+    obs_period = wrapper.cdm.ObservationPeriod.__table__
 
     sel_condition = select([
         condition.c.person_id,
@@ -66,7 +65,9 @@ def observation_period_query(wrapper: Wrapper) -> Insert:
                       visit.c.visit_end_datetime).label('end_date')
     ])
 
-    if death:  # CDM 5.3.1
+    # CDM 5.3.1
+    try:
+        death = wrapper.cdm.Death.__table__
 
         sel_death = select([
             death.c.person_id,
@@ -95,6 +96,8 @@ def observation_period_query(wrapper: Wrapper) -> Insert:
             sel_procedure,
             sel_visit
         ).alias('all_periods')
+    except AttributeError:
+        sel_death = None
 
     sel = select([
         person.c.person_id.label('person_id'),
