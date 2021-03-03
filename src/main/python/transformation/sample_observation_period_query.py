@@ -76,28 +76,21 @@ def observation_period_query(wrapper: Wrapper) -> Insert:
             literal(None).label('end_date')
         ])
 
-        all_periods = union(
-            sel_condition,
-            sel_drug,
-            sel_measurement,
-            sel_observation,
-            sel_procedure,
-            sel_visit,
-            sel_death
-        ).alias('all_periods')
-
-    else:
-
-        all_periods = union(
-            sel_condition,
-            sel_drug,
-            sel_measurement,
-            sel_observation,
-            sel_procedure,
-            sel_visit
-        ).alias('all_periods')
     except AttributeError:
         sel_death = None
+
+    sels = [
+        sel_condition,
+        sel_drug,
+        sel_measurement,
+        sel_observation,
+        sel_procedure,
+        sel_visit,
+        sel_death
+    ]
+
+    include_sels = [sel for sel in sels if sel is not None]
+    all_periods = union(*include_sels).alias('all_periods')
 
     sel = select([
         person.c.person_id.label('person_id'),
