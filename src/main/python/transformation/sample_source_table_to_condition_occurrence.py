@@ -25,14 +25,16 @@ def sample_source_table_to_condition_occurrence(wrapper: Wrapper) -> List[Wrappe
     records = []
     for _, row in df.iterrows():
 
-        condition_mapping = ICD10CM_mapper.lookup(source_code=row['condition_ICD10CM'], first_only=True)
+        condition_mapping = ICD10CM_mapper.lookup(source_code=row['condition_ICD10CM'],
+                                                  first_only=True)
 
         r = wrapper.cdm.ConditionOccurrence()
-        r.person_id=create_person_id_from_subject_id(row['subject_id'])
+        r.person_id = create_person_id_from_subject_id(row['subject_id'])
         r.condition_source_value = condition_mapping.source_concept_code
         r.condition_source_concept_id = condition_mapping.source_concept_id
         r.condition_concept_id = condition_mapping.target_concept_id
-        r.condition_start_datetime = get_datetime()  # default date
+        r.condition_start_datetime = get_datetime(default_date='2020-01-01'),
+        r.condition_end_datetime = get_datetime(default_date='2020-12-31'),
         r.condition_type_concept_id = 0
         r.condition_status_concept_id = 0
         records.append(r)
