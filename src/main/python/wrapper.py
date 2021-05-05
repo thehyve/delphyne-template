@@ -31,7 +31,7 @@ class Wrapper(BaseWrapper):
         self.execute_sql_file('sample_script.sql')
 
     def run(self):
-        # Prepare source
+        # Prepare target database
         self.create_schemas()
         self.drop_cdm()
         self.create_cdm()
